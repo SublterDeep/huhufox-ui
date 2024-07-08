@@ -22,9 +22,10 @@ pnpm-debug.log*
 *.sln
 *.sw?
 
-src/
-public/
-vue.config.js
-babel.config.js
-*.map
-*.html
+# 运行npm lib并发布npm publish时取消注释以下内容
+# src/
+# public/
+# vue.config.js
+# babel.config.js
+# *.map
+# *.html
