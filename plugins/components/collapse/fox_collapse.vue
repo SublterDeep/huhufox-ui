@@ -10,7 +10,7 @@ export default {
   props: {
     accordion: { // 手风琴效果
       type: Boolean,
-      default: false,
+      default: true,
     }
   },
   data() {
@@ -36,6 +36,12 @@ export default {
       this.$slots.default[i].child.setOpen(i===id?true:false);
     }
     },
+    // 列表项内容大小改变
+    onResize(mut, height) {
+      if (this.$parent.$parent.$options._componentTag === "fox_collapse") {
+        this.$parent.setHeight(mut, height);
+      }
+    },
   },
 }
 </script>
@@ -43,7 +49,7 @@ export default {
 .root {
   display: flex;
   flex-direction: column;
-  // gap: 5px 0;
+  background-color: #fff;
 }
 .root>div {
   border-top: 1px solid #ccc;

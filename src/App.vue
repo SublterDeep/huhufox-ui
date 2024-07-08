@@ -5,9 +5,20 @@
     </div>
     <div class="testArea">
       <fox_collapse>
-        <fox_collapse_item>1</fox_collapse_item>
-        <fox_collapse_item>2</fox_collapse_item>
-        <fox_collapse_item>3</fox_collapse_item>
+        <fox_collapse_item :label="'文本1'">
+          <fox_collapse>
+            <fox_collapse_item :label="'文本1'">1_1</fox_collapse_item>
+            <fox_collapse_item :label="'文本2'" :position="'left'">1_2</fox_collapse_item>
+          </fox_collapse>
+        </fox_collapse_item>
+        <fox_collapse_item :label="'文本2'" :position="'left'">2</fox_collapse_item>
+        <fox_collapse_item :label="'文本3'">
+          <fox_collapse>
+            <fox_collapse_item :label="'文本1'">3_1</fox_collapse_item>
+            <fox_collapse_item :label="'文本2'" :position="'left'">3_2</fox_collapse_item>
+          </fox_collapse>
+        </fox_collapse_item>
+        <fox_collapse_item :label="'文本4'" :position="'bottom'">3</fox_collapse_item>
       </fox_collapse>
     </div>
   </div>
@@ -38,7 +49,6 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* text-align: center; */
   color: #2c3e50;
   margin-top: 60px;
 }
