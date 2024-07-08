@@ -5,9 +5,24 @@
 </template>
 
 <script>
+import '../../style.css';
 export default {
   name: 'fox_test',
+  data() {
+    return {
+
+    }
+  },
+  watch: {
+
+  },
+  mounted() {
+
+  },
+  methods: {
+
+  },
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 </style>
