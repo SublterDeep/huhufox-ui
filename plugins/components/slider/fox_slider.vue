@@ -39,7 +39,6 @@
 </template>
 
 <script>
-import '../../iconfont/iconfont.css';
 import '../../style.css';
 export default {
   name: 'fox_slider',

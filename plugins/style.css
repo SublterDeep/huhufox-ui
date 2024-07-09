@@ -1,3 +1,4 @@
+@import './iconfont/iconfont.css';
 /* 公共样式 - 容器 */
 .root{
   position: relative;
@@ -121,3 +122,5 @@
   margin-bottom: 24.5px;
   background-color: #DCDFE6;
 }
+
+/* 公共样式 - 颜色 */
