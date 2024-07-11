@@ -1,13 +1,29 @@
 {
   "name": "huhufox-ui",
-  "version": "0.1.1",
-  "description": "huhufox vue UI",
-  "author": "huhufox",
+  "version": "0.1.8",
+  "description": "huhufoxUI 是一个专为 Vue.js 项目设计的轻量级 UI 组件库，旨在提供常用且高度定制化的界面组件，帮助开发者快速构建现代化的用户界面。",
+  "author": "SublterDeep/huhufox",
   "license": "MIT",
+  "homepage": "https://sublterdeep.github.io/huhufox-ui-demo/#/",
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/SublterDeep/huhufox-ui",
+    "directory": "packages/vue"
+  },
   "keywords": [
     "huhufox",
-    "vue"
+    "fox",
+    "vue",
+    "component",
+    "components",
+    "ui"
   ],
+  "files": [
+    "index.js",
+    "plugin/",
+    "glob/*.{js,json}"
+  ],
+  "bugs": "https://github.com/SublterDeep/huhufox-ui/issues",
   "scripts": {
     "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",

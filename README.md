@@ -12,6 +12,15 @@ Github: https://github.com/SublterDeep/huhufox-ui-demo
 
 Github Page: https://sublterdeep.github.io/huhufox-ui-demo/#/
 
+## 快速上手
+
+```javascript
+// main.js
+import Vue from 'vue';
+import huhufoxUI from 'huhufox-ui'
+Vue.use(huhufoxUI);
+```
+
 ## 安装依赖
 
 ```
@@ -25,8 +34,6 @@ npm run dev
 ```
 
 ### 打包发布
-
-
 
 ==== 在打包发布前记得在.gitignore文件中取消几行注释 ====
 

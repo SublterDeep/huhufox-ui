@@ -11,7 +11,7 @@
             <fox_collapse_item :label="'文本1_2'" :position="'left'">1_2</fox_collapse_item>
           </fox_collapse>
         </fox_collapse_item>
-        <fox_collapse_item :label="'文本2'">2</fox_collapse_item>
+        <fox_collapse_item :label="'文本2'" :borderColor="'red'" :hoverColor="'red'">2</fox_collapse_item>
         <fox_collapse_item :label="'文本3'">
           <fox_collapse>
             <fox_collapse_item :label="'文本3_1'" :position="'left'">3_1</fox_collapse_item>
@@ -28,7 +28,12 @@
             </fox_collapse_item>
           </fox_collapse>
         </fox_collapse_item>
-        <fox_collapse_item :label="'文本4'" :position="'bottom'">3</fox_collapse_item>
+        <fox_collapse_item :label="'文本4'" :position="'bottom'">
+          <template v-slot:header>
+            <div style="width: 100px;height: 100px; background-color: red;">header_3</div>
+          </template>
+          <div style="width: 100px;height: 100px; background-color: red;">content_3</div>
+        </fox_collapse_item>
       </fox_collapse>
     </div>
   </div>

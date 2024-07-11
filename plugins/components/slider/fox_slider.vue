@@ -4,8 +4,8 @@
     <section class="coverArea" v-if="disable"></section>
     <section class="picArea" :style="{ height: picHeight + (typeof picHeight === 'string' ? '' : 'px'), borderRadius: borderRadius + (typeof borderRadius === 'string' ? '' : 'px') }">
       <div class="picArrowArea" :style="{opacity: ((alwaysShowArrow || currentAlwaysShowArrow) ? 1 : 0)}"  v-if="arrData.length > 1 && showArrow">
-        <div @click="handleArrowBTNclick(false)" class="picArrowArea_leftBTN arrowBTN iconfont icon-arrow-left-bold"></div>
-        <div @click="handleArrowBTNclick(true)" class="picArrowArea_rightBTN arrowBTN iconfont icon-arrow-right-bold"></div>
+        <div @click.stop="handleArrowBTNclick(false)" class="picArrowArea_leftBTN arrowBTN iconfont icon-arrow-left-bold"></div>
+        <div @click.stop="handleArrowBTNclick(true)" class="picArrowArea_rightBTN arrowBTN iconfont icon-arrow-right-bold"></div>
       </div>
       <div class="pic_container" ref="pic_container">
         <section id="left_container"
@@ -30,7 +30,7 @@
     </section>
     <section class="ctrlArea" :style="{ height: ctrlHeight + (typeof ctrlHeight === 'string' ? '' : 'px') }">
       <div class="btnGroupArea" v-if="showGroup">
-        <div @click="handleCtrlBTNclick(idx)" :class="getCtrlBTNactiveClass(idx)" v-for="(item, idx) in arrData"
+        <div @click.stop="handleCtrlBTNclick(idx)" :class="getCtrlBTNactiveClass(idx)" v-for="(item, idx) in arrData"
           :key="idx"></div>
       </div>
     </section>

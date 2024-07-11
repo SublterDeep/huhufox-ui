@@ -1,7 +1,8 @@
 <template>
   <div class="root">
-    <header :class="position" @click="setOpen(!open)">
-      <span>{{label}}</span>
+    <header :class="position" @click.stop="setOpen(!open)">
+      <slot name="header" v-if="position==='bottom'"></slot>
+      <span v-else>{{label}}</span>
       <span v-if="position==='left' || position==='right'">
         <span :class="(open ? 'iconfont icon-arrow-right active' : 'iconfont icon-arrow-right')"></span>
       </span>
@@ -9,7 +10,7 @@
     <section :style="{height: open ? height : '0px'}">
       <div class="container" ref="container"><slot></slot></div>
     </section>
-    <footer @click="setOpen(!open)"  v-if="position==='bottom'">
+    <footer @click.stop="setOpen(!open)"  v-if="position==='bottom'">
       <span :class="(open ? 'iconfont icon-arrow-down active_bottom' : 'iconfont icon-arrow-down')"></span>
       <span class="desc">展开</span>
     </footer>
@@ -25,6 +26,9 @@ export default {
       index: -1,
       height: '100px',
       open: false,
+      borderColorLoc: '#DCDFE6',
+      hoverColorLoc: '#409EFF',
+      contentColorLoc: '#FAFAFA',
     }
   },
   props: {
@@ -32,6 +36,18 @@ export default {
     position: {
       type: String,
       default: 'right',
+    },
+    borderColor: {
+      type: String,
+      default: null,
+    },
+    hoverColor: {
+      type: String,
+      default: null,
+    },
+    contentColor: {
+      type: String,
+      default: null,
     },
   },
   watch: {
@@ -43,6 +59,8 @@ export default {
   },
   mounted() {
     this.height = this.$refs.container.getBoundingClientRect().height + 'px';
+    this.setColor('borderColor', this.borderColor);
+    this.setColor('hoverColor', this.hoverColor);
   },
   methods: {
     setIndex(idx) {
@@ -55,11 +73,16 @@ export default {
     setHeight(m, h) {
       this.height = (parseInt(this.height) + (parseInt(h) * m)) + 'px';
     },
+    setColor(name, color) {
+      if (_.isNull(this[name])) this[`${name}Loc`] = color;
+      else this[`${name}Loc`] = this[name]
+    },
   },
 }
 </script>
 <style scoped lang="scss">
 .root {
+  width: 100%;
   position: relative;
 }
 header {
@@ -74,14 +97,14 @@ footer {
   font-size: 12px;
   box-sizing: border-box;
   padding: 15px;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid v-bind('borderColorLoc');
 }
 .desc {
   cursor: pointer;
   transition: .15s;
 }
 footer:hover .desc,footer:hover {
-  color: aqua;
+  color: v-bind('hoverColorLoc');
 }
 section {
   box-sizing: border-box;
@@ -92,8 +115,8 @@ section {
 .container {
   box-sizing: border-box;
   padding: 10px 15px;
-  border-top: 1px solid #ccc;
-  background-color: #eaeaea;
+  border-top: 1px solid v-bind('borderColorLoc');
+  background-color: v-bind('contentColorLoc');
   margin-bottom: 5px;
 }
 .left {
@@ -110,6 +133,10 @@ section {
 .iconfont {
   transition: .15s;
   display: inline-block;
+  cursor: pointer;
+}
+.iconfont:hover {
+  color: v-bind('hoverColorLoc');
 }
 .active {
   transform: rotate(90deg);
