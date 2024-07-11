@@ -1,7 +1,64 @@
 <template>
   <div id="app">
     <div class="testArea">
-      <fox_slider :arrData="arr_1" />
+      <fox_collapse>
+        <fox_collapse_item :position="'bottom'">
+          <template v-slot:header>
+            <fox_slider :arrData="arr_1" />
+          </template>
+          content
+        </fox_collapse_item>
+      </fox_collapse>
+    </div>
+    <div class="testArea">
+      <fox_collapse>
+        <fox_collapse_item :position="'bottom'">
+          <template v-slot:header>
+            <fox_slider :arrData="arr_1" />
+          </template>
+          content
+        </fox_collapse_item>
+      </fox_collapse>
+    </div>
+    <div class="testArea">
+      <fox_collapse>
+        <fox_collapse_item :position="'bottom'">
+          <template v-slot:header>
+            <fox_slider :arrData="arr_1" />
+          </template>
+          content
+        </fox_collapse_item>
+      </fox_collapse>
+    </div>
+    <div class="testArea">
+      <fox_collapse>
+        <fox_collapse_item :position="'bottom'">
+          <template v-slot:header>
+            <fox_slider :arrData="arr_1" />
+          </template>
+          content
+        </fox_collapse_item>
+      </fox_collapse>
+    </div>
+    <div class="testArea">
+      <fox_collapse>
+        <fox_collapse_item :position="'bottom'">
+          <template v-slot:header>
+            <fox_slider :arrData="arr_1" />
+          </template>
+          content
+        </fox_collapse_item>
+      </fox_collapse>
+    </div>
+    <div class="testArea">
+      <fox_collapse>
+        <fox_collapse_item :position="'bottom'">
+          <template v-slot:header>
+            <fox_slider :arrData="arr_1" />
+          </template>
+          content
+        </fox_collapse_item>
+      </fox_collapse>
     </div>
     <div class="testArea">
       <fox_collapse>

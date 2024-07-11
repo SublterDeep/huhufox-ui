@@ -2,7 +2,7 @@
   <div class="root" ref="root" @mouseenter="handleMouseHover(true)" @mouseleave="handleMouseHover(false)"
     :style="{ borderRadius: borderRadius + (typeof borderRadius === 'string' ? '' : 'px') }">
     <section class="coverArea" v-if="disable"></section>
-    <section class="picArea" @mousedown.stop.prevent="handleMousestart" @mousemove.stop.prevent="handleMousemove" @mouseup.stop.prevent="handleMouseend" @touchstart="handleTouchstart" @touchmove="handleTouchmove" @touchend="handleTouchend" :style="{ height: picHeight + (typeof picHeight === 'string' ? '' : 'px'), borderRadius: borderRadius + (typeof borderRadius === 'string' ? '' : 'px') }">
+    <section class="picArea" @click.stop.prevent @mousedown.prevent.stop="handleMousestart" @mousemove.prevent.stop="handleMousemove" @mouseup.prevent.stop="handleMouseend" @touchstart="handleTouchstart" @touchmove="handleTouchmove" @touchend="handleTouchend" :style="{ height: picHeight + (typeof picHeight === 'string' ? '' : 'px'), borderRadius: borderRadius + (typeof borderRadius === 'string' ? '' : 'px') }">
       <div class="picArrowArea" :style="{opacity: ((alwaysShowArrow || currentAlwaysShowArrow) ? 1 : 0)}"  v-if="arrData.length > 1 && showArrow">
         <div @click.stop="handleArrowBTNclick(false)" class="picArrowArea_leftBTN arrowBTN iconfont icon-arrow-left-bold"></div>
         <div @click.stop="handleArrowBTNclick(true)" class="picArrowArea_rightBTN arrowBTN iconfont icon-arrow-right-bold"></div>
@@ -42,7 +42,6 @@
 const SHOT_SWIPE_TIME = 200; // 判定为快速滑动屏幕的最大时长
 const SHOT_SWIPE_DIS = 0.08; // 判定为快速滑动屏幕的最小距离(计算方式为组件宽度*该值)
 const LONG_SWIPE_DIS = 0.24; // 判定为普通滑动屏幕的最小距离(计算方式为组件宽度*该值)
-import { throttle } from 'lodash';
 import '../../style.css';
 export default {
   name: 'fox_slider',
@@ -136,10 +135,12 @@ export default {
       touchPos: [{x: 0, y: 0}, {x: 0, y: 0}], // 触摸起始/结束位置
       touchDis: 0, // 触摸移动的距离
       isMouseDown: false, // 鼠标是否正在按下
+      resizeTimer: null,
     };
   },
   mounted() {
     const dom = this.$refs.root;
+    window.addEventListener("resize", this.handleResize);
     this.resizeObserver = new ResizeObserver(this.handleResize);
     this.resizeObserver.observe(dom, { box: "border-box" });
     this.init();
@@ -204,7 +205,6 @@ export default {
       };
     },
     handleMousemove(ev) {
-      // if (!this.mouseSwipe) return;
       if (!this.isMouseDown || !this.mouseSwipe) return;
       this.touchPos[1] = {
         x: ev.clientX,
@@ -281,9 +281,9 @@ export default {
       });
     },
     // 组件大小变动处理函数
-    handleResize: throttle(function (ev) {
+    handleResize (ev) {
       this.handleContainerPos(0);
-    }, 250),
+    },
     handleMouseHover (hover) {
       this.isMouseDown = false;
       this.currentAutoScroll = !hover;
