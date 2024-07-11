@@ -12,7 +12,7 @@ Github: https://github.com/SublterDeep/huhufox-ui-demo
 
 Github Page: https://sublterdeep.github.io/huhufox-ui-demo/#/
 
-## 快速上手
+### 快速上手
 
 ```javascript
 // main.js
@@ -21,7 +21,7 @@ import huhufoxUI from 'huhufox-ui'
 Vue.use(huhufoxUI);
 ```
 
-## 安装依赖
+### 安装依赖
 
 ```
 npm install
