@@ -4,6 +4,8 @@ vue2.x可用的ui组件
 
 使用依赖：sass、lodash
 
+Github: https://github.com/SublterDeep/huhufox-ui
+
 npm link: https://www.npmjs.com/package/huhufox-ui
 
 使用演示：huhufox-ui-demo

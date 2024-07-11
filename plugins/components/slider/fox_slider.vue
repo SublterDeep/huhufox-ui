@@ -1,27 +1,27 @@
 <template>
-  <div class="root" @mouseenter="handleMouseHover(true)" @mouseleave="handleMouseHover(false)"
+  <div class="root" ref="root" @mouseenter="handleMouseHover(true)" @mouseleave="handleMouseHover(false)"
     :style="{ borderRadius: borderRadius + (typeof borderRadius === 'string' ? '' : 'px') }">
     <section class="coverArea" v-if="disable"></section>
-    <section class="picArea" :style="{ height: picHeight + (typeof picHeight === 'string' ? '' : 'px'), borderRadius: borderRadius + (typeof borderRadius === 'string' ? '' : 'px') }">
+    <section class="picArea" @mousedown.stop.prevent="handleMousestart" @mousemove.stop.prevent="handleMousemove" @mouseup.stop.prevent="handleMouseend" @touchstart="handleTouchstart" @touchmove="handleTouchmove" @touchend="handleTouchend" :style="{ height: picHeight + (typeof picHeight === 'string' ? '' : 'px'), borderRadius: borderRadius + (typeof borderRadius === 'string' ? '' : 'px') }">
       <div class="picArrowArea" :style="{opacity: ((alwaysShowArrow || currentAlwaysShowArrow) ? 1 : 0)}"  v-if="arrData.length > 1 && showArrow">
         <div @click.stop="handleArrowBTNclick(false)" class="picArrowArea_leftBTN arrowBTN iconfont icon-arrow-left-bold"></div>
         <div @click.stop="handleArrowBTNclick(true)" class="picArrowArea_rightBTN arrowBTN iconfont icon-arrow-right-bold"></div>
       </div>
       <div class="pic_container" ref="pic_container">
         <section id="left_container"
-          :style="{ width: `${containerWidth}px`, left: `${container_pos[0]}px`, transition: (transitionAnim ? transitionTime : 0) + 's' }">
+          :style="{ width: `${containerWidth}px`, left: `${container_pos[0]+touchDis}px`, transition: (transitionAnim ? transitionTime : 0) + 's' }">
           <div class="imgContainer" v-for="(item, idx) in arrData" :key="idx" :style="{ background: item.color }">{{ idx
             + 1
             }}</div>
         </section>
         <section id="center_container"
-          :style="{ width: `${containerWidth}px`, left: `${container_pos[1]}px`, transition: (transitionAnim ? transitionTime : 0) + 's' }">
+          :style="{ width: `${containerWidth}px`, left: `${container_pos[1]+touchDis}px`, transition: (transitionAnim ? transitionTime : 0) + 's' }">
           <div class="imgContainer" v-for="(item, idx) in arrData" :key="idx" :style="{ background: item.color }">{{ idx
             + 1
             }}</div>
         </section>
         <section id="right_container"
-          :style="{ width: `${containerWidth}px`, left: `${container_pos[2]}px`, transition: (transitionAnim ? transitionTime : 0) + 's' }">
+          :style="{ width: `${containerWidth}px`, left: `${container_pos[2]+touchDis}px`, transition: (transitionAnim ? transitionTime : 0) + 's' }">
           <div class="imgContainer" v-for="(item, idx) in arrData" :key="idx" :style="{ background: item.color }">{{ idx
             + 1
             }}</div>
@@ -39,6 +39,10 @@
 </template>
 
 <script>
+const SHOT_SWIPE_TIME = 200; // 判定为快速滑动屏幕的最大时长
+const SHOT_SWIPE_DIS = 0.08; // 判定为快速滑动屏幕的最小距离(计算方式为组件宽度*该值)
+const LONG_SWIPE_DIS = 0.24; // 判定为普通滑动屏幕的最小距离(计算方式为组件宽度*该值)
+import { throttle } from 'lodash';
 import '../../style.css';
 export default {
   name: 'fox_slider',
@@ -73,7 +77,7 @@ export default {
     },
     scrollTime: { // 自动轮播停留时长
       type: Number,
-      default: 1.5,
+      default: 3,
     },
     btnStyle: { // 箭头按钮和组按钮样式集
       type: Object,
@@ -103,6 +107,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    mouseSwipe: { // 是否开启鼠标滑动控制轮播图翻页
+      type: Boolean, 
+      default: true,
+    }
   },
   model: {
     data: {
@@ -122,10 +130,23 @@ export default {
       currentStyle: {}, // 计算后的按钮样式设定集
       currentAutoScroll: true, // 本地是否启用自动轮播
       currentAlwaysShowArrow: false, // 本地是否一直显示箭头按钮
+      resizeObserver: null, // 组件大小变化监听器
+      touchDuration: 0, // 触摸持续时间
+      touchTimer: [null, null], // 触摸时长计时器
+      touchPos: [{x: 0, y: 0}, {x: 0, y: 0}], // 触摸起始/结束位置
+      touchDis: 0, // 触摸移动的距离
+      isMouseDown: false, // 鼠标是否正在按下
     };
   },
   mounted() {
+    const dom = this.$refs.root;
+    this.resizeObserver = new ResizeObserver(this.handleResize);
+    this.resizeObserver.observe(dom, { box: "border-box" });
     this.init();
+  },
+  beforeDestory() {
+    this.resizeObserver.disconnect();
+    this.handleInterval(false);
   },
   watch: {
     currentAutoScroll(nval, oval) {
@@ -161,9 +182,6 @@ export default {
       deep: true
     }
   },
-  beforeDestory() {
-    this.handleInterval(false);
-  },
   methods: {
     init() {
       if (_.isUndefined(this.arrData) || _.isNull(this.arrData) || this.arrData.length === 0) {
@@ -175,10 +193,103 @@ export default {
       this.handleBtnStyle();
       this.handleContainerPos(0);
     },
+    handleMousestart(ev) {
+      if (!this.mouseSwipe) return;
+      this.isMouseDown =  true;
+      this.transitionAnim = false;
+      this.touchTimer[0] = new Date().getTime();
+      this.touchPos[0] = {
+        x: ev.clientX,
+        y: ev.clientY
+      };
+    },
+    handleMousemove(ev) {
+      // if (!this.mouseSwipe) return;
+      if (!this.isMouseDown || !this.mouseSwipe) return;
+      this.touchPos[1] = {
+        x: ev.clientX,
+        y: ev.clientY
+      };
+      this.touchDis = Math.floor(this.touchPos[1].x - this.touchPos[0].x);
+    },
+    handleMouseend(ev) {
+      if (!this.mouseSwipe) return;
+      this.isMouseDown =  false;
+      this.transitionAnim = true;
+      this.touchTimer[1] = new Date().getTime();
+      this.touchDuration = this.touchTimer[1] - this.touchTimer[0];
+      this.touchPos[1] = {
+        x: ev.clientX,
+        y: ev.clientY
+      };
+      this.touchDis = Math.floor(this.touchPos[1].x - this.touchPos[0].x);
+      // 快速滑动判定
+      if (this.touchDuration < SHOT_SWIPE_TIME && (Math.abs(this.touchDis) > this.getContainerWidth() * SHOT_SWIPE_DIS)) {
+        this.handleArrowBTNclick(this.touchDis <= 0 ? true : false);
+        this.touchDis = 0;
+        return;
+      }
+      // 普通滑动判定
+      if (this.touchDuration >= SHOT_SWIPE_TIME && (Math.abs(this.touchDis) > this.getContainerWidth() * LONG_SWIPE_DIS)) {
+        this.handleArrowBTNclick(this.touchDis <= 0 ? true : false);
+        this.touchDis = 0;
+        return;
+      }
+      this.$nextTick(()=>{
+        this.touchDis = 0;
+      });
+    },
+    // 移动端滑动屏幕处理函数
+    handleTouchstart(ev) {
+      this.transitionAnim = false;
+      this.touchTimer[0] = new Date().getTime();
+      this.touchPos[0] = {
+        x: ev.targetTouches[0].clientX,
+        y: ev.targetTouches[0].clientY
+      };
+    },
+    handleTouchmove(ev) {
+      this.touchPos[1] = {
+        x: ev.targetTouches[0].clientX,
+        y: ev.targetTouches[0].clientY
+      };
+      this.touchDis = Math.floor(this.touchPos[1].x - this.touchPos[0].x);
+    },
+    handleTouchend(ev) {
+      this.transitionAnim = true;
+      this.touchTimer[1] = new Date().getTime();
+      this.touchDuration = this.touchTimer[1] - this.touchTimer[0];
+      this.touchPos[1] = {
+        x: ev.changedTouches[0].clientX,
+        y: ev.changedTouches[0].clientY
+      };
+      this.touchDis = Math.floor(this.touchPos[1].x - this.touchPos[0].x);
+      // 快速滑动判定
+      if (this.touchDuration < SHOT_SWIPE_TIME && (Math.abs(this.touchDis) > this.getContainerWidth() * SHOT_SWIPE_DIS)) {
+        this.handleArrowBTNclick(this.touchDis <= 0 ? true : false);
+        this.touchDis = 0;
+        return;
+      }
+      // 普通滑动判定
+      if (this.touchDuration >= SHOT_SWIPE_TIME && (Math.abs(this.touchDis) > this.getContainerWidth() * LONG_SWIPE_DIS)) {
+        this.handleArrowBTNclick(this.touchDis <= 0 ? true : false);
+        this.touchDis = 0;
+        return;
+      }
+      this.$nextTick(()=>{
+        this.touchDis = 0;
+      });
+    },
+    // 组件大小变动处理函数
+    handleResize: throttle(function (ev) {
+      this.handleContainerPos(0);
+    }, 250),
     handleMouseHover (hover) {
+      this.isMouseDown = false;
       this.currentAutoScroll = !hover;
       this.currentAlwaysShowArrow = hover;
     },
+    // 初始化组件样式函数
     handleBtnStyle () {
       let btnStyle = {
         arrowColor: '#CACACA',
@@ -192,19 +303,12 @@ export default {
       }
       this.currentStyle = btnStyle;
     },
-    rmb(str) {
-      let strArr = String(parseFloat(str).toFixed(2))
-        .split('')//字符串按照''拆分成数组
-        .reverse()//数组反转,方便计数
-        .map((item, index) => {
-          return index > 3 && !(index % 3) ? item + ',' : item; //包含小数点，5位以上才有逗号,注意index%3 要有括号包裹，
-        });
-      return strArr.reverse().join('');
-    },
+    // 获取单个容器内容宽度
     getContainerWidth() {
       let width = window.getComputedStyle(this.$refs.pic_container).width;
       return parseInt(width);
     },
+    // 处理[左, 中, 右]容器位置
     handleContainerPos(idx) {
       // 获取容器宽度
       let width = this.getContainerWidth();
@@ -237,22 +341,12 @@ export default {
     },
     // 动画控制器
     handleAnimation(isRight = true, domIndex = 0) {
-      // console.log(`向${isRight ? '右' : '左'}滑动，显示为${domIndex === 0 ? '中间' : (domIndex === -1 ? '左侧' : '右侧')}部分`);
-      if (isRight) {
-        // 向右滑动
-        // console.log('scroll right');
-      }
-      else {
-        // 向左滑动
-        // console.log('scroll left');
-      }
       this.handleContainerPos(domIndex);
     },
     // 按钮点击事件
     handleCtrlBTNclick(idx) {
       this.nowSelect = idx;
       let n = idx - this.nowSelect;
-      // 判断是否为临近按钮
     },
     // 左右箭头点击事件
     handleArrowBTNclick(plus) {
