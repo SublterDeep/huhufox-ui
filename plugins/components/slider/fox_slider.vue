@@ -135,6 +135,7 @@ export default {
       intervalTimer: null, // 自动轮播计时器对象
       containerIndex: 0, // [左，中，右]容器对应[-1，0，1]
       containerWidth: 0, // [左，中，右]容器宽度
+      singleContainerWidth: 0, // 容器中单个图片宽度
       container_pos: [0, 0, 0], // [左，中，右]容器x坐标
       container_timer: null,
       transitionAnim: true, // 是否启用翻页动画
@@ -155,11 +156,16 @@ export default {
     this.resizeObserver = new ResizeObserver(this.handleResize);
     this.resizeObserver.observe(dom, { box: "border-box" });
     this.init();
-    console.log(this.$slots);
   },
   beforeDestory() {
     this.resizeObserver.disconnect();
     this.handleInterval(false);
+    this.clearTimeout(this.container_timer);
+  },
+  deactivated() {
+    this.resizeObserver.disconnect();
+    this.handleInterval(false);
+    this.clearTimeout(this.container_timer);
   },
   watch: {
     currentAutoScroll(nval, oval) {
@@ -201,6 +207,7 @@ export default {
         console.log('轮播图组件：请在标签携带图片数组变量！(arrData: [])');
         return;
       }
+      this.getContainerWidth();
       this.handleInterval(this.currentAutoScroll);
       this.handleData();
       this.handleBtnStyle();
@@ -236,13 +243,13 @@ export default {
       };
       this.touchDis = Math.floor(this.touchPos[1].x - this.touchPos[0].x);
       // 快速滑动判定
-      if (this.touchDuration < SHOT_SWIPE_TIME && (Math.abs(this.touchDis) > this.getContainerWidth() * SHOT_SWIPE_DIS)) {
+      if (this.touchDuration < SHOT_SWIPE_TIME && (Math.abs(this.touchDis) > this.singleContainerWidth * SHOT_SWIPE_DIS)) {
         this.handleArrowBTNclick(this.touchDis <= 0 ? true : false);
         this.touchDis = 0;
         return;
       }
       // 普通滑动判定
-      if (this.touchDuration >= SHOT_SWIPE_TIME && (Math.abs(this.touchDis) > this.getContainerWidth() * LONG_SWIPE_DIS)) {
+      if (this.touchDuration >= SHOT_SWIPE_TIME && (Math.abs(this.touchDis) > this.singleContainerWidth * LONG_SWIPE_DIS)) {
         this.handleArrowBTNclick(this.touchDis <= 0 ? true : false);
         this.touchDis = 0;
         return;
@@ -277,13 +284,13 @@ export default {
       };
       this.touchDis = Math.floor(this.touchPos[1].x - this.touchPos[0].x);
       // 快速滑动判定
-      if (this.touchDuration < SHOT_SWIPE_TIME && (Math.abs(this.touchDis) > this.getContainerWidth() * SHOT_SWIPE_DIS)) {
+      if (this.touchDuration < SHOT_SWIPE_TIME && (Math.abs(this.touchDis) > this.singleContainerWidth * SHOT_SWIPE_DIS)) {
         this.handleArrowBTNclick(this.touchDis <= 0 ? true : false);
         this.touchDis = 0;
         return;
       }
       // 普通滑动判定
-      if (this.touchDuration >= SHOT_SWIPE_TIME && (Math.abs(this.touchDis) > this.getContainerWidth() * LONG_SWIPE_DIS)) {
+      if (this.touchDuration >= SHOT_SWIPE_TIME && (Math.abs(this.touchDis) > this.singleContainerWidth * LONG_SWIPE_DIS)) {
         this.handleArrowBTNclick(this.touchDis <= 0 ? true : false);
         this.touchDis = 0;
         return;
@@ -294,6 +301,7 @@ export default {
     },
     // 组件大小变动处理函数
     handleResize (ev) {
+      this.getContainerWidth();
       this.handleContainerPos(0);
     },
     handleMouseHover (hover) {
@@ -317,13 +325,17 @@ export default {
     },
     // 获取单个容器内容宽度
     getContainerWidth() {
+      let elm = this.$refs.pic_container;
+      if (_.isUndefined(elm) || _.isNull(this.$refs.pic_container)) return;
       let width = window.getComputedStyle(this.$refs.pic_container).width;
+      this.singleContainerWidth = parseInt(width);
       return parseInt(width);
     },
     // 处理[左, 中, 右]容器位置
     handleContainerPos(idx) {
       // 获取容器宽度
-      let width = this.getContainerWidth();
+      // let width = this.getContainerWidth();
+      let width = this.singleContainerWidth;
       let containerWidth = width * this.arrData.length;
       let offsetWidth = -(width * this.nowSelect);
       // 优先检测快速翻页 --待完成
@@ -503,7 +515,6 @@ export default {
   justify-content: space-evenly;
   align-items: center;
   gap: 0 20px;
-  background-color: yellow;
 }
 
 .ctrlBTN {
@@ -534,7 +545,7 @@ export default {
   position: absolute;
   top: 0px;
   display: flex;
-  background-color: orange;
+  // background-color: orange;
 }
 
 #center_container {
@@ -543,7 +554,7 @@ export default {
   position: absolute;
   top: 0px;
   display: flex;
-  background-color: orangered;
+  // background-color: orangered;
 }
 
 #right_container {
@@ -552,7 +563,7 @@ export default {
   position: absolute;
   top: 0px;
   display: flex;
-  background-color: orchid;
+  // background-color: orchid;
 }
 
 .imgContainer {
