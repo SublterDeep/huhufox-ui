@@ -4,57 +4,21 @@
       <fox_collapse>
         <fox_collapse_item :position="'bottom'">
           <template v-slot:header>
-            <fox_slider :arrData="arr_1" />
-          </template>
-          content
-        </fox_collapse_item>
-      </fox_collapse>
-    </div>
-    <div class="testArea">
-      <fox_collapse>
-        <fox_collapse_item :position="'bottom'">
-          <template v-slot:header>
-            <fox_slider :arrData="arr_1" />
-          </template>
-          content
-        </fox_collapse_item>
-      </fox_collapse>
-    </div>
-    <div class="testArea">
-      <fox_collapse>
-        <fox_collapse_item :position="'bottom'">
-          <template v-slot:header>
-            <fox_slider :arrData="arr_1" />
-          </template>
-          content
-        </fox_collapse_item>
-      </fox_collapse>
-    </div>
-    <div class="testArea">
-      <fox_collapse>
-        <fox_collapse_item :position="'bottom'">
-          <template v-slot:header>
-            <fox_slider :arrData="arr_1" />
-          </template>
-          content
-        </fox_collapse_item>
-      </fox_collapse>
-    </div>
-    <div class="testArea">
-      <fox_collapse>
-        <fox_collapse_item :position="'bottom'">
-          <template v-slot:header>
-            <fox_slider :arrData="arr_1" />
-          </template>
-          content
-        </fox_collapse_item>
-      </fox_collapse>
-    </div>
-    <div class="testArea">
-      <fox_collapse>
-        <fox_collapse_item :position="'bottom'">
-          <template v-slot:header>
-            <fox_slider :arrData="arr_1" />
+            <fox_slider :customGroup="false" :arrData="arr_2" ref="fox_slider">
+              <!-- <template v-slot:leftBTN>
+                <div>left</div>
+                <div>left</div>
+                <div>left</div>
+              </template> -->
+              <!-- <template v-slot:rightBTN>
+                <div>right</div>
+                <div>right</div>
+                <div>right</div>
+              </template> -->
+              <template #groupBTN="{handleGroupClick}">
+                <div @click="handleGroupClick(idx);" v-for="(item, idx) in arr_2">{{ idx+1 }}</div>
+              </template>
+            </fox_slider>
           </template>
           content
         </fox_collapse_item>
@@ -110,9 +74,15 @@ export default {
   },
   data() {
     return {
-      arr_1: ['01', '02', '03', '04'],
+      arr_1: ['01', '02', '03', '04', '01', '02', '03', '04'],
+      arr_2: ['01', '02', '03', '04'],
     }
-  }
+  },
+  methods: {
+    handleClick(idx) {
+      console.log(idx);
+    },
+  },
 }
 </script>
 

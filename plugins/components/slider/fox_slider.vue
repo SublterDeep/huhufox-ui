@@ -4,8 +4,14 @@
     <section class="coverArea" v-if="disable"></section>
     <section class="picArea" @click.stop.prevent @mousedown.prevent.stop="handleMousestart" @mousemove.prevent.stop="handleMousemove" @mouseup.prevent.stop="handleMouseend" @touchstart="handleTouchstart" @touchmove="handleTouchmove" @touchend="handleTouchend" :style="{ height: picHeight + (typeof picHeight === 'string' ? '' : 'px'), borderRadius: borderRadius + (typeof borderRadius === 'string' ? '' : 'px') }">
       <div class="picArrowArea" :style="{opacity: ((alwaysShowArrow || currentAlwaysShowArrow) ? 1 : 0)}"  v-if="arrData.length > 1 && showArrow">
-        <div @click.stop="handleArrowBTNclick(false)" class="picArrowArea_leftBTN arrowBTN iconfont icon-arrow-left-bold"></div>
-        <div @click.stop="handleArrowBTNclick(true)" class="picArrowArea_rightBTN arrowBTN iconfont icon-arrow-right-bold"></div>
+        <div @click.stop="handleArrowBTNclick(false)" class="picArrowArea_leftBTN">
+          <slot name="leftBTN"></slot>
+          <div v-if="!('leftBTN' in $slots)" class="arrowBTN iconfont icon-arrow-left-bold flex-center"></div>
+        </div>
+        <div @click.stop="handleArrowBTNclick(true)" class="picArrowArea_rightBTN">
+          <slot name="rightBTN"></slot>
+          <div v-if="!('rightBTN' in $slots)" class="arrowBTN iconfont icon-arrow-right-bold flex-center"></div>
+        </div>
       </div>
       <div class="pic_container" ref="pic_container">
         <section id="left_container"
@@ -29,9 +35,10 @@
       </div>
     </section>
     <section class="ctrlArea" :style="{ height: ctrlHeight + (typeof ctrlHeight === 'string' ? '' : 'px') }">
-      <div class="btnGroupArea" v-if="showGroup">
-        <div @click.stop="handleCtrlBTNclick(idx)" :class="getCtrlBTNactiveClass(idx)" v-for="(item, idx) in arrData"
-          :key="idx"></div>
+      <div class="btnGroupArea" v-if="showGroup"  @click.stop.prevent>
+        <slot v-if="customGroup" name="groupBTN" :handleGroupClick="handleCtrlBTNclick"></slot>
+        <div class="btnGroupArea" v-else><div @click.stop="handleCtrlBTNclick(idx)" :class="getCtrlBTNactiveClass(idx)" v-for="(item, idx) in arrData"
+          :key="idx"></div></div>
       </div>
     </section>
   </div>
@@ -42,6 +49,7 @@
 const SHOT_SWIPE_TIME = 200; // 判定为快速滑动屏幕的最大时长
 const SHOT_SWIPE_DIS = 0.08; // 判定为快速滑动屏幕的最小距离(计算方式为组件宽度*该值)
 const LONG_SWIPE_DIS = 0.24; // 判定为普通滑动屏幕的最小距离(计算方式为组件宽度*该值)
+import { setTimeout } from 'core-js';
 import '../../style.css';
 export default {
   name: 'fox_slider',
@@ -76,7 +84,11 @@ export default {
     },
     scrollTime: { // 自动轮播停留时长
       type: Number,
-      default: 3,
+      default: 2000,
+    },
+    customGroup: { // 自定义底部按钮控制栏
+      type: Boolean,
+      default: false,
     },
     btnStyle: { // 箭头按钮和组按钮样式集
       type: Object,
@@ -135,7 +147,6 @@ export default {
       touchPos: [{x: 0, y: 0}, {x: 0, y: 0}], // 触摸起始/结束位置
       touchDis: 0, // 触摸移动的距离
       isMouseDown: false, // 鼠标是否正在按下
-      resizeTimer: null,
     };
   },
   mounted() {
@@ -144,6 +155,7 @@ export default {
     this.resizeObserver = new ResizeObserver(this.handleResize);
     this.resizeObserver.observe(dom, { box: "border-box" });
     this.init();
+    console.log(this.$slots);
   },
   beforeDestory() {
     this.resizeObserver.disconnect();
@@ -172,7 +184,7 @@ export default {
         domIndex = leftStepNum > rightStepNum ? 1 : 0;
       }
       isRight = rightStepNum > leftStepNum ? false : true;
-      this.handleAnimation(isRight, domIndex);
+      this.handleContainerPos(domIndex);
     },
     arrData: {
       handler(nval, oval) {
@@ -314,6 +326,24 @@ export default {
       let width = this.getContainerWidth();
       let containerWidth = width * this.arrData.length;
       let offsetWidth = -(width * this.nowSelect);
+      // 优先检测快速翻页 --待完成
+      if (!_.isNull(this.container_timer) && idx === 0) {
+        /* console.log('快速翻页');
+        clearTimeout(this.container_timer);
+        this.container_timer = null;
+        this.transitionAnim = false;
+        let defaultPos = [-(containerWidth + offsetWidth), offsetWidth, (containerWidth + offsetWidth)];
+        if (this.nowSelect !== 0) defaultPos
+        this.container_pos = defaultPos = defaultPos;
+        setTimeout(()=>{
+          // 设置位置
+          let arrPos = [-(containerWidth + offsetWidth), offsetWidth, (containerWidth + offsetWidth)];
+          this.transitionAnim = true;
+          this.container_pos = arrPos;
+          this.containerWidth = containerWidth;
+        }, 10);
+        return; */
+      }
       // 设置位置
       let arrPos = [-(containerWidth + offsetWidth), offsetWidth, (containerWidth + offsetWidth)];
       switch (idx) {
@@ -339,10 +369,6 @@ export default {
         this.container_timer = null;
       }
     },
-    // 动画控制器
-    handleAnimation(isRight = true, domIndex = 0) {
-      this.handleContainerPos(domIndex);
-    },
     // 按钮点击事件
     handleCtrlBTNclick(idx) {
       this.nowSelect = idx;
@@ -364,9 +390,14 @@ export default {
     handleInterval(autoscroll = true) {
       if (autoscroll && this.autoScroll) {
         if (_.isNull(this.intervalTimer)) {
+          let time = Math.abs(parseInt(this.scrollTime)) * 1000;
+          if (time === 0 || _.isNaN(time)) {
+            time = 2000;
+            console.log('轮播停留时长值错误！请检查参数scrollTime');
+          }
           this.intervalTimer = setInterval(() => {
             this.nowSelect = (this.nowSelect + 1) % this.arrData.length;
-          }, 2000);
+          }, time);
         }
       }
       else {
@@ -472,6 +503,7 @@ export default {
   justify-content: space-evenly;
   align-items: center;
   gap: 0 20px;
+  background-color: yellow;
 }
 
 .ctrlBTN {
