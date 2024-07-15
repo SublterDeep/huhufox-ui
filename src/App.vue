@@ -1,6 +1,27 @@
 <template>
   <div id="app">
     <div class="testArea">
+      <fox_button :label="`点击切换${dmode?'白天':'深色'}模式`" @onClick="handleClick(...arguments, dmode)" :darkMode="dmode"></fox_button>
+      <fox_button :label="'BUTTON'" :iconPosition="'left'">
+        <template #icon>
+          <span class="iconfont icon-arrow-down"></span>
+        </template>
+        <template #label>
+          <span>BTN</span>
+        </template>
+      </fox_button>
+      <fox_button :label="'BUTTON'" customInner darkMode>
+        <template #customInner>
+          <div style="width: 100px; height: 10px;" class="flex-center">BTN</div>
+        </template>
+      </fox_button>
+      <fox_button :label="'BUTTON'"  :borderRadius="'20px'" :bgColor="'white'" :themeColor="'red'"></fox_button>
+      <fox_button :label="'BUTTON'" darkMode :themeColor="'red'" :borderRadius="'20px'"></fox_button>
+      <fox_button :label="'BUTTON'" darkMode :themeColor="'white'" :borderRadius="'20px'"></fox_button>
+      <fox_button :label="'BUTTON'" darkMode mini :themeColor="'aqua'" :borderRadius="'auto'"></fox_button>
+      <fox_button :label="'BUTTON'" darkMode large :themeColor="'pink'" :borderRadius="'auto'"></fox_button>
+    </div>
+    <div v-if="false" class="testArea">
       <fox_collapse>
         <fox_collapse_item :position="'bottom'">
           <template v-slot:header>
@@ -24,7 +45,7 @@
         </fox_collapse_item>
       </fox_collapse>
     </div>
-    <div class="testArea">
+    <div v-if="false" class="testArea">
       <fox_collapse>
         <fox_collapse_item :label="'文本1'" :position="'right'">
           <fox_collapse>
@@ -64,11 +85,13 @@
 import fox_slider from '../plugins/components/slider/fox_slider.vue'
 import fox_collapse from '../plugins/components/collapse/fox_collapse.vue'
 import fox_collapse_item from '../plugins/components/collapse_item/fox_collapse_item.vue';
+import fox_button from '../plugins/components/fox_button';
 
 export default {
   name: 'App',
   components: {
     fox_slider,
+    fox_button,
     fox_collapse,
     fox_collapse_item,
   },
@@ -76,11 +99,21 @@ export default {
     return {
       arr_1: ['01', '02', '03', '04', '01', '02', '03', '04'],
       arr_2: ['01', '02', '03', '04'],
+      dmode: false,
     }
   },
+  mounted() {
+    /* setInterval(() => {
+      this.dmode = !this.dmode;
+      console.log(this.dmode);
+    }, 1000); */
+  },
   methods: {
-    handleClick(idx) {
-      console.log(idx);
+    handleClick(ev, d) {
+      console.log(ev);
+      console.log('上次按钮状态:' + (d?'深色模式':'白天模式'));
+      this.dmode = !d;
+      console.log('变更状态为:' + (this.dmode?'深色模式':'白天模式'));
     },
   },
 }
