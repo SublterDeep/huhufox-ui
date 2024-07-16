@@ -36,7 +36,7 @@
     </section>
     <section class="ctrlArea" :style="{ height: ctrlHeight + (typeof ctrlHeight === 'string' ? '' : 'px') }">
       <div class="btnGroupArea" v-if="showGroup"  @click.stop.prevent>
-        <slot v-if="customGroup" name="groupBTN" :handleGroupClick="handleCtrlBTNclick"></slot>
+        <slot v-if="customGroup" name="groupBTN nsel" :handleGroupClick="handleCtrlBTNclick"></slot>
         <div class="btnGroupArea nsel" v-else><div @click.stop="handleCtrlBTNclick(idx)" :class="getCtrlBTNactiveClass(idx)" v-for="(item, idx) in arrData"
           :key="idx"></div></div>
       </div>

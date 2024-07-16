@@ -21,31 +21,18 @@
       <fox_button :label="'BUTTON'" darkMode mini :themeColor="'aqua'" :borderRadius="'auto'"></fox_button>
       <fox_button :label="'BUTTON'" darkMode large :themeColor="'pink'" :borderRadius="'auto'"></fox_button>
     </div>
-    <div v-if="false" class="testArea">
+    <div v-if="true" class="testArea">
       <fox_collapse>
         <fox_collapse_item :position="'bottom'">
           <template v-slot:header>
             <fox_slider :customGroup="false" :arrData="arr_2" ref="fox_slider">
-              <!-- <template v-slot:leftBTN>
-                <div>left</div>
-                <div>left</div>
-                <div>left</div>
-              </template> -->
-              <!-- <template v-slot:rightBTN>
-                <div>right</div>
-                <div>right</div>
-                <div>right</div>
-              </template> -->
-              <template #groupBTN="{handleGroupClick}">
-                <div @click="handleGroupClick(idx);" v-for="(item, idx) in arr_2">{{ idx+1 }}</div>
-              </template>
             </fox_slider>
           </template>
           content
         </fox_collapse_item>
       </fox_collapse>
     </div>
-    <div v-if="false" class="testArea">
+    <div v-if="true" class="testArea">
       <fox_collapse>
         <fox_collapse_item :label="'test1'" :position="'left'">
           <template v-slot:header>
@@ -93,7 +80,7 @@
         </fox_collapse_item>
       </fox_collapse>
     </div>
-    <div v-if="false" class="testArea">
+    <div v-if="true" class="testArea">
       <fox_collapse>
         <fox_collapse_item :position="'bottom'"  class="displayArea">
           <template v-slot:header>
@@ -141,10 +128,10 @@
 </template>
 
 <script>
-import fox_slider from '../plugins/components/slider/fox_slider.vue'
-import fox_collapse from '../plugins/components/collapse/fox_collapse.vue'
-import fox_collapse_item from '../plugins/components/collapse_item/fox_collapse_item.vue';
-import fox_button from '../plugins/components/fox_button';
+import fox_slider from '../plugins/components/fox_slider/fox_slider.vue'
+import fox_collapse from '../plugins/components/fox_collapse/fox_collapse.vue'
+import fox_collapse_item from '../plugins/components/fox_collapse_item/fox_collapse_item.vue';
+import fox_button from '../plugins/components/fox_button/fox_button.vue';
 
 export default {
   name: 'App',

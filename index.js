@@ -1,9 +1,9 @@
 //组件
 import fox_test from "./plugins/components/fox_test/index.js";
-import fox_slider from "./plugins/components/slider/index.js";
+import fox_slider from "./plugins/components/fox_slider/index.js";
 import fox_button from "./plugins/components/fox_button/index.js";
-import fox_collapse from "./plugins/components/collapse/index.js";
-import fox_collapse_item from "./plugins/components/collapse_item/index.js";
+import fox_collapse from "./plugins/components/fox_collapse/index.js";
+import fox_collapse_item from "./plugins/components/fox_collapse_item/index.js";
 
 //所有组件列表
 const components = [

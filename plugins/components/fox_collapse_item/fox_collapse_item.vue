@@ -85,7 +85,7 @@ export default {
 <style scoped lang="scss">
 .root {
   width: 100%;
-  position: relative;
+  // position: relative;
 }
 header {
   box-sizing: border-box;

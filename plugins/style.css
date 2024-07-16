@@ -65,10 +65,12 @@
 }
 
 .flex-alc {
+  display: flex;
   align-items: center;
 }
 
 .flex-juc {
+  display: flex;
   justify-content: center;
 }
 
