@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div v-if="true" class="testArea">
+    <div v-if="false" class="testArea">
       <fox_button :label="`点击切换${dmode?'白天':'深色'}模式`" @onClick="handleClick(...arguments, dmode)" :darkMode="dmode"></fox_button>
       <fox_button :label="'BUTTON'" :iconPosition="'left'">
         <template #icon>
@@ -21,7 +21,7 @@
       <fox_button :label="'BUTTON'" darkMode mini :themeColor="'aqua'" :borderRadius="'auto'"></fox_button>
       <fox_button :label="'BUTTON'" darkMode large :themeColor="'pink'" :borderRadius="'auto'"></fox_button>
     </div>
-    <div v-if="true" class="testArea">
+    <div v-if="false" class="testArea">
       <fox_collapse>
         <fox_collapse_item :position="'bottom'">
           <template v-slot:header>
@@ -33,54 +33,22 @@
       </fox_collapse>
     </div>
     <div v-if="true" class="testArea">
-      <fox_collapse>
-        <fox_collapse_item :label="'test1'" :position="'left'">
+      <fox_collapse :bottomText="'114444'" :showIcon="false" :lockContent="true">
+        <fox_collapse_item :label="'test1'" :position="'bottom'">
           <template v-slot:header>
-            <fox_collapse>
-              <fox_collapse_item :label="'innerLabel'">
-                inner content1
-              </fox_collapse_item>
-            </fox_collapse>
+            <div>test1</div>
           </template>
-          <template #ttt>ttt</template>
-          <template #fff>fff</template>
-          <template #ddd>ddd</template>
+          <template #bottom1>ttt</template>
+          <template #icon>icon</template>
+          <template #bottomText>ddd</template>
           content1
         </fox_collapse_item>
-      </fox_collapse>
-      <fox_collapse v-if="false">
-        <fox_collapse_item :label="'文本1'" :position="'right'">
-          <fox_collapse>
-            <fox_collapse_item :label="'文本1_1'" :position="'left'">1_1</fox_collapse_item>
-            <fox_collapse_item :label="'文本1_2'" :position="'left'">1_2</fox_collapse_item>
-          </fox_collapse>
-        </fox_collapse_item>
-        <fox_collapse_item :label="'文本2'" :borderColor="'red'" :hoverColor="'red'">2</fox_collapse_item>
-        <fox_collapse_item :label="'文本3'">
-          <fox_collapse>
-            <fox_collapse_item :label="'文本3_1'" :position="'left'">3_1</fox_collapse_item>
-            <fox_collapse_item :label="'文本3_2'" :position="'left'">
-              <fox_collapse>
-                <fox_collapse_item :label="'文本3_2_1'" :position="'left'">3_2_1</fox_collapse_item>
-                <fox_collapse_item :label="'文本3_2_2'" :position="'left'">
-                  <fox_collapse>
-                    <fox_collapse_item :label="'文本3_2_2_1'" :position="'left'">3_2_2_1</fox_collapse_item>
-                    <fox_collapse_item :label="'文本3_2_2_2'" :position="'left'">3_2_2_2</fox_collapse_item>
-                  </fox_collapse>
-                </fox_collapse_item>
-              </fox_collapse>
-            </fox_collapse_item>
-          </fox_collapse>
-        </fox_collapse_item>
-        <fox_collapse_item :label="'文本4'" :position="'bottom'">
-          <template v-slot:header>
-            <div style="width: 100px;height: 100px; background-color: red;">header_3</div>
-          </template>
-          <div style="width: 100px;height: 100px; background-color: red;">content_3</div>
-        </fox_collapse_item>
+        <fox_collapse_item :label="'label 2'" :position="'bottom'" :bottomText="[123, 222]">label 2</fox_collapse_item>
+        <fox_collapse_item :label="'label 3'" :position="'bottom'" :showIcon="true" :lockContent="false">label 3</fox_collapse_item>
+        <fox_collapse_item :label="'label 4'" :position="'bottom'">label 4</fox_collapse_item>
       </fox_collapse>
     </div>
-    <div v-if="true" class="testArea">
+    <div v-if="false" class="testArea">
       <fox_collapse>
         <fox_collapse_item :position="'bottom'"  class="displayArea">
           <template v-slot:header>
