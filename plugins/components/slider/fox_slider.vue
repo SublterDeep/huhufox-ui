@@ -6,11 +6,11 @@
       <div class="picArrowArea" :style="{opacity: ((alwaysShowArrow || currentAlwaysShowArrow) ? 1 : 0)}"  v-if="arrData.length > 1 && showArrow">
         <div @click.stop="handleArrowBTNclick(false)" class="picArrowArea_leftBTN">
           <slot name="leftBTN"></slot>
-          <div v-if="!('leftBTN' in $slots)" class="arrowBTN iconfont icon-arrow-left-bold flex-center"></div>
+          <div v-if="!('leftBTN' in $slots)" class="arrowBTN nsel iconfont icon-arrow-left-bold flex-center"></div>
         </div>
         <div @click.stop="handleArrowBTNclick(true)" class="picArrowArea_rightBTN">
           <slot name="rightBTN"></slot>
-          <div v-if="!('rightBTN' in $slots)" class="arrowBTN iconfont icon-arrow-right-bold flex-center"></div>
+          <div v-if="!('rightBTN' in $slots)" class="arrowBTN nsel iconfont icon-arrow-right-bold flex-center"></div>
         </div>
       </div>
       <div class="pic_container" ref="pic_container">
@@ -37,7 +37,7 @@
     <section class="ctrlArea" :style="{ height: ctrlHeight + (typeof ctrlHeight === 'string' ? '' : 'px') }">
       <div class="btnGroupArea" v-if="showGroup"  @click.stop.prevent>
         <slot v-if="customGroup" name="groupBTN" :handleGroupClick="handleCtrlBTNclick"></slot>
-        <div class="btnGroupArea" v-else><div @click.stop="handleCtrlBTNclick(idx)" :class="getCtrlBTNactiveClass(idx)" v-for="(item, idx) in arrData"
+        <div class="btnGroupArea nsel" v-else><div @click.stop="handleCtrlBTNclick(idx)" :class="getCtrlBTNactiveClass(idx)" v-for="(item, idx) in arrData"
           :key="idx"></div></div>
       </div>
     </section>

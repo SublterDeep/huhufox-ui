@@ -129,4 +129,12 @@
   background-color: #DCDFE6;
 }
 
+/* 公共样式 - 样式 */
+.nsel {
+  user-select: none;
+}
+.nact {
+  pointer-events: none;
+}
+
 /* 公共样式 - 颜色 */

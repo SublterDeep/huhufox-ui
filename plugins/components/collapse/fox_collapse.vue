@@ -1,5 +1,5 @@
 <template>
-  <div class="root">
+  <div class="root" @click.stop.prevent>
     <slot @onchange="onChange"></slot>
   </div>
 </template>
@@ -42,8 +42,30 @@ export default {
       this.$slots.default[i].child.setColor('hoverColor', this.hoverColor);
       if (!_.isNull(this.contentColor)) this.$slots.default[i].child.setColor('contentColor', this.contentColor);
     }
+    // console.log(Object.keys(this.$parent.$slots).length);
+    // console.log(this.$vnode);
     // 设置列表的父节点(如果父节点为列表项)
-    if (this.$parent.$options._componentTag === "fox_collapse_item") this.pNode = this.$parent;
+    if (this.$parent.$options._componentTag === "fox_collapse_item") {
+      // 判断父元素有没有插槽，如果父元素没有插槽，直接赋值
+      if (Object.keys(this.$parent.$slots).length === 0) this.pNode = this.$parent;
+      else {
+        // 判断当前折叠列表是否位于父元素的$slots中
+        let thisvnode = this.$vnode;
+        let parentslots = this.$parent.$slots;
+        let isInclude = false;
+        for(let elm in parentslots) {
+          for (let i=0 ; i<parentslots[elm].length ; i++) {
+            if (!(_.isUndefined(parentslots[elm][i].context))) {
+              if (_.isEqual(thisvnode.context._uid, parentslots[elm][i].context._uid)) {
+                isInclude = true;
+                return;
+              }
+            }
+          }
+        }
+        if (!isInclude) this.pNode = this.$parent;
+      }
+    }
   },
   methods: {
     // 列表项展开折叠触发

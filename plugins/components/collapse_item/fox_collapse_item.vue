@@ -1,17 +1,19 @@
 <template>
   <div class="root">
-    <header :class="position" @click.stop="setOpen(!open)">
-      <slot name="header" v-if="position==='bottom'"></slot>
-      <span v-else>{{label}}</span>
+    <header class="flex-center" :class="position" @click.stop="setOpen(!open)">
+      <div v-if="('header' in $slots)" style="width: 100%">
+        <slot name="header"></slot>
+      </div>
+      <div v-else>{{label}}</div>
       <span v-if="position==='left' || position==='right'">
-        <span :class="(open ? 'iconfont icon-arrow-right active' : 'iconfont icon-arrow-right')"></span>
+        <span :class="(open ? 'iconfont icon-arrow-right nsel active' : 'iconfont icon-arrow-right nsel')"></span>
       </span>
     </header>
     <section :style="{height: open ? height : '0px'}">
       <div class="container" ref="container"><slot></slot></div>
     </section>
     <footer @click.stop="setOpen(!open)"  v-if="position==='bottom'">
-      <span :class="(open ? 'iconfont icon-arrow-down active_bottom' : 'iconfont icon-arrow-down')"></span>
+      <span :class="(open ? 'iconfont icon-arrow-down active_bottom nsel' : 'iconfont icon-arrow-down nsel')"></span>
       <span class="desc">展开</span>
     </footer>
   </div>

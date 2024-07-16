@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="testArea">
+    <div class="testArea" v-if="false">
       <fox_button :label="`点击切换${dmode?'白天':'深色'}模式`" @onClick="handleClick(...arguments, dmode)" :darkMode="dmode"></fox_button>
       <fox_button :label="'BUTTON'" :iconPosition="'left'">
         <template #icon>
@@ -45,8 +45,23 @@
         </fox_collapse_item>
       </fox_collapse>
     </div>
-    <div v-if="false" class="testArea">
+    <div v-if="true" class="testArea">
       <fox_collapse>
+        <fox_collapse_item :label="'test1'" :position="'left'">
+          <template v-slot:header>
+            <fox_collapse>
+              <fox_collapse_item :label="'innerLabel'">
+                inner content1
+              </fox_collapse_item>
+            </fox_collapse>
+          </template>
+          <template #ttt>ttt</template>
+          <template #fff>fff</template>
+          <template #ddd>ddd</template>
+          content1
+        </fox_collapse_item>
+      </fox_collapse>
+      <fox_collapse v-if="false">
         <fox_collapse_item :label="'文本1'" :position="'right'">
           <fox_collapse>
             <fox_collapse_item :label="'文本1_1'" :position="'left'">1_1</fox_collapse_item>

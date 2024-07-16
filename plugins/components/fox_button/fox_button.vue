@@ -1,5 +1,5 @@
 <template>
-  <div class="fox_button" @click.stop.prevent="handleClick">
+  <div class="fox_button nsel" @click.stop.prevent="handleClick">
     <fox_baseframe
       :themeColor="themeColor"
       :bgColor="bgColor"
@@ -156,7 +156,6 @@ export default {
 <style scoped lang="scss">
 .fox_button {
   display: inline-block;
-  user-select: none;
 }
 .flex-center {
   color: v-bind('deLabelColor_loc');
