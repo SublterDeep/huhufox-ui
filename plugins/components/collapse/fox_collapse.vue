@@ -30,6 +30,7 @@ export default {
     return {
       index: -1,
       pNode: null,
+      inHeader: false, // 当前折叠面板是否被嵌套在其他折叠面板的header中
     }
   },
   watch: {
@@ -42,29 +43,19 @@ export default {
       this.$slots.default[i].child.setColor('hoverColor', this.hoverColor);
       if (!_.isNull(this.contentColor)) this.$slots.default[i].child.setColor('contentColor', this.contentColor);
     }
-    // console.log(Object.keys(this.$parent.$slots).length);
-    // console.log(this.$vnode);
     // 设置列表的父节点(如果父节点为列表项)
-    if (this.$parent.$options._componentTag === "fox_collapse_item") {
-      // 判断父元素有没有插槽，如果父元素没有插槽，直接赋值
-      if (Object.keys(this.$parent.$slots).length === 0) this.pNode = this.$parent;
-      else {
-        // 判断当前折叠列表是否位于父元素的$slots中
-        let thisvnode = this.$vnode;
-        let parentslots = this.$parent.$slots;
-        let isInclude = false;
-        for(let elm in parentslots) {
-          for (let i=0 ; i<parentslots[elm].length ; i++) {
-            if (!(_.isUndefined(parentslots[elm][i].context))) {
-              if (_.isEqual(thisvnode.context._uid, parentslots[elm][i].context._uid)) {
-                isInclude = true;
-                return;
-              }
-            }
+    if (this.$parent.$options._componentTag === "fox_collapse_item" && !this.inHeader) {
+      if ('header' in this.$parent.$slots) {
+        let inHeader = false;
+        for (let i=0 ; i<this.$parent.$slots.header.length ; i++) {
+          if (this.$vnode.context._uid === this.$parent.$slots.header[i].context._uid) {
+            inHeader = true;
+            return;
           }
         }
-        if (!isInclude) this.pNode = this.$parent;
+        if (!inHeader) this.pNode = this.$parent;
       }
+      else this.pNode = this.$parent;
     }
   },
   methods: {
@@ -80,7 +71,7 @@ export default {
     },
     // 列表项内容大小改变
     onResize(mut, height) {
-      if (!_.isNull(this.pNode)) {
+      if (!_.isNull(this.pNode) && !this.inHeader) {
         this.pNode.setHeight(mut, height);
         // 三层及以上嵌套高度依然有bug，也许需要递归
         this.pNode.$parent.onResize(mut, height);

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="testArea" v-if="false">
+    <div v-if="true" class="testArea">
       <fox_button :label="`点击切换${dmode?'白天':'深色'}模式`" @onClick="handleClick(...arguments, dmode)" :darkMode="dmode"></fox_button>
       <fox_button :label="'BUTTON'" :iconPosition="'left'">
         <template #icon>
@@ -45,7 +45,7 @@
         </fox_collapse_item>
       </fox_collapse>
     </div>
-    <div v-if="true" class="testArea">
+    <div v-if="false" class="testArea">
       <fox_collapse>
         <fox_collapse_item :label="'test1'" :position="'left'">
           <template v-slot:header>
@@ -90,6 +90,50 @@
             <div style="width: 100px;height: 100px; background-color: red;">header_3</div>
           </template>
           <div style="width: 100px;height: 100px; background-color: red;">content_3</div>
+        </fox_collapse_item>
+      </fox_collapse>
+    </div>
+    <div v-if="false" class="testArea">
+      <fox_collapse>
+        <fox_collapse_item :position="'bottom'"  class="displayArea">
+          <template v-slot:header>
+            <div>
+              
+            <!-- 展示内容 -->
+            <fox_collapse>
+              <fox_collapse_item :label="'文本1：嵌套两层折叠面板'" :position="'right'">
+                <fox_collapse>
+                  <fox_collapse_item :label="'文本1_1'" :position="'left'">1_1</fox_collapse_item>
+                  <fox_collapse_item :label="'文本1_2'" :position="'left'">1_2</fox_collapse_item>
+                </fox_collapse>
+              </fox_collapse_item>
+              <fox_collapse_item :label="'文本2'">2</fox_collapse_item>
+              <fox_collapse_item :label="'文本3：多层嵌套'">
+                <div class="desc m_b">设置了手风琴效果</div>
+                <fox_collapse accordion>
+                  <fox_collapse_item :label="'文本3_1'" :position="'left'">3_1</fox_collapse_item>
+                  <fox_collapse_item :label="'文本3_2'" :position="'left'">
+                    <fox_collapse>
+                      <fox_collapse_item :label="'文本3_2_1'" :position="'left'">3_2_1</fox_collapse_item>
+                      <fox_collapse_item :label="'文本3_2_2'" :position="'left'">
+                        <fox_collapse>
+                          <fox_collapse_item :label="'文本3_2_2_1'" :position="'left'">3_2_2_1</fox_collapse_item>
+                          <fox_collapse_item :label="'文本3_2_2_2'" :position="'left'">3_2_2_2：看晕了吗？别嵌套太多层比较好</fox_collapse_item>
+                        </fox_collapse>
+                      </fox_collapse_item>
+                    </fox_collapse>
+                  </fox_collapse_item>
+                </fox_collapse>
+              </fox_collapse_item>
+              <fox_collapse_item :label="'文本4'" :position="'bottom'">
+                <template v-slot:header><div class="tal">文本4：展开按钮图标在下方</div></template>4
+              </fox_collapse_item>
+            </fox_collapse>
+            </div>
+          </template>
+          <!-- 代码放这 -->
+          <p class="tal">Template:</p>
+
         </fox_collapse_item>
       </fox_collapse>
     </div>
