@@ -33,14 +33,14 @@
       </fox_collapse>
     </div>
     <div v-if="true" class="testArea">
-      <fox_collapse :bottomText="'114444'" :showIcon="false" :lockContent="true">
-        <fox_collapse_item :label="'test1'" :position="'bottom'">
-          <template v-slot:header>
-            <div>test1</div>
+      <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false">
+        <fox_collapse_item :label="'test11'" :position="'bottom'">
+          <template v-slot:header1>
+            <div>test bottom</div>
           </template>
           <template #bottom1>ttt</template>
-          <template #icon>icon</template>
-          <template #bottomText>ddd</template>
+          <template #icon1>icon</template>
+          <template #bottomText1>ddd</template>
           content1
         </fox_collapse_item>
         <fox_collapse_item :label="'label 2'" :position="'bottom'" :bottomText="[123, 222]">label 2</fox_collapse_item>

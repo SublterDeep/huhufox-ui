@@ -84,7 +84,7 @@ export default {
       this.height = this.$refs.container.getBoundingClientRect().height + 'px';
       this.setColor('borderColor', this.borderColor);
       this.setColor('hoverColor', this.hoverColor);
-      this.setButtonText();
+      this.setButtonText(DEFAULT_BOTTOM_TEXT);
     },
     setIndex(idx) {
       this.index = idx;
@@ -172,6 +172,10 @@ section {
 .right {
   display: flex;
   justify-content: space-between;
+}
+.bottom {
+  width: 100%;
+  justify-content: flex-start;
 }
 .iconfont {
   transition: .15s;
