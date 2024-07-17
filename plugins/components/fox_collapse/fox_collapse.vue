@@ -36,6 +36,9 @@ export default {
       type: Boolean,
       default: false,
     },
+    expand: { // 默认展开
+      default: false,
+    },
   },
   data() {
     return {
@@ -46,43 +49,64 @@ export default {
   watch: {
   },
   mounted() {
-    // 设置每个列表项的id和边框颜色
-    for (let i=0 ; i<this.$slots.default.length ; i++) {
-      this.$slots.default[i].child.setIndex(i);
-      this.$slots.default[i].child.setColor('borderColor', this.borderColor);
-      this.$slots.default[i].child.setColor('hoverColor', this.hoverColor);
-      if (!(_.isNull(this.contentColor))) this.$slots.default[i].child.setColor('contentColor', this.contentColor);
-    }
-    for (let i=0 ; i<this.$slots.default.length ; i++) {
-      if (!(_.isNull(this.bottomText))) this.$slots.default[i].child.setButtonText(this.bottomText); // 设置每个列表项的底部按钮文本
-      if (!(_.isNull(this.showIcon))) this.$slots.default[i].child.setShowIcon(this.showIcon); // 设置每个列表项的图标显示状态
-      if (!(_.isNull(this.lockContent))) this.$slots.default[i].child.setLockContent(this.lockContent); // 设置每个列表项的内容锁定状态
-    }
-    // 设置列表的父节点(如果父节点为列表项)
-    if (this.$parent.$options._componentTag === "fox_collapse_item") {
-      if ('header' in this.$parent.$slots) {
-        let inHeader = false;
-        for (let i=0 ; i<this.$parent.$slots.header.length ; i++) {
-          if (this.$vnode.context._uid === this.$parent.$slots.header[i].context._uid) {
-            inHeader = true;
-            return;
-          }
-        }
-        if (!inHeader) this.pNode = this.$parent;
-      }
-      else this.pNode = this.$parent;
-    }
+    this.init();
   },
   methods: {
+    init() {
+      this.initStyle();
+      this.initPnode();
+    },
+    initStyle() {
+      let arrRes = [];
+      // 处理expand默认展开参数
+      if (_.isArray(this.expand)) {
+        for (let i = 0; i < this.$slots.default.length; i++) {
+          arrRes.push(false);
+        }
+        for (let i = 0; i < this.expand.length; i++) {
+          if (this.expand[i] < this.$slots.default.length) arrRes[this.expand[i]] = true;
+        }
+      }
+      else if (_.isBoolean(this.expand)) {
+        for (let i = 0; i < this.$slots.default.length; i++) arrRes.push(this.expand);
+      }
+      console.log(arrRes);
+      for (let i = 0; i < this.$slots.default.length; i++) {
+        this.$slots.default[i].child.setIndex(i); // 设置每个列表项的id
+        this.$slots.default[i].child.setColor('borderColor', this.borderColor); // 设置每个列表项的边框颜色
+        this.$slots.default[i].child.setColor('hoverColor', this.hoverColor); // 设置每个列表项的悬浮颜色
+        if (arrRes[i]) this.$slots.default[i].child.setOpen(true);
+        if (!(_.isNull(this.contentColor))) this.$slots.default[i].child.setColor('contentColor', this.contentColor);
+        if (!(_.isNull(this.bottomText))) this.$slots.default[i].child.setButtonText(this.bottomText); // 设置每个列表项的底部按钮文本
+        if (!(_.isNull(this.showIcon))) this.$slots.default[i].child.setShowIcon(this.showIcon); // 设置每个列表项的图标显示状态
+        if (!(_.isNull(this.lockContent))) this.$slots.default[i].child.setLockContent(this.lockContent); // 设置每个列表项的内容锁定状态
+      }
+    },
+    initPnode() {
+      // 设置列表的父节点(如果父节点为列表项)
+      if (this.$parent.$options._componentTag === "fox_collapse_item") {
+        if ('header' in this.$parent.$slots) {
+          let inHeader = false;
+          for (let i = 0; i < this.$parent.$slots.header.length; i++) {
+            if (this.$vnode.context._uid === this.$parent.$slots.header[i].context._uid) {
+              inHeader = true;
+              return;
+            }
+          }
+          if (!inHeader) this.pNode = this.$parent;
+        }
+        else this.pNode = this.$parent;
+      }
+    },
     // 列表项展开折叠触发
     onChange(id, status) {
       if (status && this.accordion) this.handleChildListStatus(id);
     },
     // 手风琴效果函数
     handleChildListStatus(id) {
-    for (let i=0 ; i<this.$slots.default.length ; i++) {
-      this.$slots.default[i].child.setOpen(i===id?true:false);
-    }
+      for (let i = 0; i < this.$slots.default.length; i++) {
+        this.$slots.default[i].child.setOpen(i === id ? true : false);
+      }
     },
     // 列表项内容大小改变
     onResize(mut, height) {
@@ -102,9 +126,11 @@ export default {
   flex-direction: column;
   background-color: #fff;
 }
+
 .root>div {
   border-top: 1px solid v-bind('borderColor');
 }
+
 .root>div:last-child {
   border-bottom: 1px solid v-bind('borderColor');
 }

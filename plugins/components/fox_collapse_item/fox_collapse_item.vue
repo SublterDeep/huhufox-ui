@@ -68,6 +68,10 @@ export default {
       type: Boolean,
       default: null,
     },
+    expand: { // 默认展开
+      type: Boolean,
+      default: false,
+    },
   },
   watch: {
     open(nval) {
@@ -85,6 +89,7 @@ export default {
       this.setColor('borderColor', this.borderColor);
       this.setColor('hoverColor', this.hoverColor);
       this.setButtonText(DEFAULT_BOTTOM_TEXT);
+      this.setOpen(this.expand);
     },
     setIndex(idx) {
       this.index = idx;

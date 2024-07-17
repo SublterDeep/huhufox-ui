@@ -308,6 +308,7 @@ export default {
       this.isMouseDown = false;
       this.currentAutoScroll = !hover;
       this.currentAlwaysShowArrow = hover;
+      if (!hover) this.touchDis = 0;
     },
     // 初始化组件样式函数
     handleBtnStyle () {

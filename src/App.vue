@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <div v-if="true"class="testArea">
-      <fox_button :label="'BUTTON'" darkMode :textColor="'yellow'"></fox_button>
+    <div v-if="false"class="testArea">
+      <fox_slider :arrData="arr_1"></fox_slider>
     </div>
     <div v-if="false" class="testArea">
       <fox_button :label="`点击切换${dmode?'白天':'深色'}模式`" @onClick="handleClick(...arguments, dmode)" :darkMode="dmode"></fox_button>
@@ -35,8 +35,8 @@
         </fox_collapse_item>
       </fox_collapse>
     </div>
-    <div v-if="false" class="testArea">
-      <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false">
+    <div v-if="true" class="testArea">
+      <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="[0, 2, 1.5, 11]">
         <fox_collapse_item :label="'test11'" :position="'bottom'">
           <template v-slot:header1>
             <div>test bottom</div>
