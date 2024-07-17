@@ -70,12 +70,11 @@ export default {
       else if (_.isBoolean(this.expand)) {
         for (let i = 0; i < this.$slots.default.length; i++) arrRes.push(this.expand);
       }
-      console.log(arrRes);
       for (let i = 0; i < this.$slots.default.length; i++) {
         this.$slots.default[i].child.setIndex(i); // 设置每个列表项的id
         this.$slots.default[i].child.setColor('borderColor', this.borderColor); // 设置每个列表项的边框颜色
         this.$slots.default[i].child.setColor('hoverColor', this.hoverColor); // 设置每个列表项的悬浮颜色
-        if (arrRes[i]) this.$slots.default[i].child.setOpen(true);
+        if (arrRes[i]) this.$slots.default[i].child.setExpand(true); // 为每个列表项设置默认展开
         if (!(_.isNull(this.contentColor))) this.$slots.default[i].child.setColor('contentColor', this.contentColor);
         if (!(_.isNull(this.bottomText))) this.$slots.default[i].child.setButtonText(this.bottomText); // 设置每个列表项的底部按钮文本
         if (!(_.isNull(this.showIcon))) this.$slots.default[i].child.setShowIcon(this.showIcon); // 设置每个列表项的图标显示状态

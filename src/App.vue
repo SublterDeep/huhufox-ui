@@ -36,8 +36,8 @@
       </fox_collapse>
     </div>
     <div v-if="true" class="testArea">
-      <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="[0, 2, 1.5, 11]">
-        <fox_collapse_item :label="'test11'" :position="'bottom'">
+      <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="true">
+        <fox_collapse_item :label="'test11'" :position="'bottom'" :expand="false">
           <template v-slot:header1>
             <div>test bottom</div>
           </template>

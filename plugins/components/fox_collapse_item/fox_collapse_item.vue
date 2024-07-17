@@ -70,7 +70,7 @@ export default {
     },
     expand: { // 默认展开
       type: Boolean,
-      default: false,
+      default: null,
     },
   },
   watch: {
@@ -89,10 +89,15 @@ export default {
       this.setColor('borderColor', this.borderColor);
       this.setColor('hoverColor', this.hoverColor);
       this.setButtonText(DEFAULT_BOTTOM_TEXT);
-      this.setOpen(this.expand);
+      this.setExpand((_.isNull(this.expand)) ? false : this.expand);
     },
     setIndex(idx) {
       this.index = idx;
+    },
+    setExpand(ex) {
+      if (this.lockContentLoc) return;
+      this.height = this.$refs.container.getBoundingClientRect().height + 'px';
+      this.open = (_.isNull(this.expand)) ? ex : this.expand;
     },
     setOpen(op) {
       if (this.lockContentLoc) return;
