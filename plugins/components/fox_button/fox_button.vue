@@ -22,6 +22,8 @@
 </template>
 
 <script>
+const DARK_TEXT_COLOR = ['#ccc', '#fff', '#fff'];
+const LIGHT_TEXT_COLOR = ['#666', '#333', '#000'];
 import '../../style.css';
 import fox_baseframe from '../fox_baseframe/fox_baseframe.vue';
 export default {
@@ -36,10 +38,7 @@ export default {
       type: String,
       default: null,
     },
-    labelColor: { // 文本和图标颜色
-      default: null,
-    },
-    deLabelColor: { // 文本和图标颜色
+    textColor: { // 文本和图标颜色 接受一个字符串或者数组['默认颜色', '悬浮颜色', '激活颜色']
       default: null,
     },
     borderRadius: { // 按钮外边框圆角 - 不给单位默认px
@@ -76,9 +75,8 @@ export default {
   data() {
     return {
       fontSize: ['16px', '12px', '22px',],
+      textColor_Loc: null,
       size_loc: 0,
-      labelColor_loc: '',
-      deLabelColor_loc: '',
     }
   },
   components: {
@@ -95,8 +93,7 @@ export default {
   methods: {
     init() {
       this.initSize();
-      this.initLabelColor();
-      this.initDeLabelColor();
+      this.initColor();
     },
     initSize() {
       if (this.large || this.mini) {
@@ -123,17 +120,27 @@ export default {
         }
       }
     },
-    initLabelColor() {
-      if (_.isNull(this.labelColor)) {
-        this.labelColor_loc = this.darkMode ? '#fff' : '#333';
+    initColor() {
+      if (_.isNull(this.textColor)) {
+        this.textColor_Loc = this.darkMode ? DARK_TEXT_COLOR : LIGHT_TEXT_COLOR;
+        this.textColor_Loc[2] = this.themeColor;
       }
-      else this.labelColor_loc = this.labelColor;
-    },
-    initDeLabelColor() {
-      if (_.isNull(this.deLabelColor)) {
-        this.deLabelColor_loc = this.darkMode ? '#ccc' : '#666';
+      else {
+        if (typeof this.textColor === 'string') {
+          this.textColor_Loc = [this.textColor, this.textColor, this.textColor];
+          return;
+        }
+        if (this.textColor.length >= 3) this.textColor_Loc = this.textColor;
+        else if (this.textColor.length === 2) {
+          this.textColor_Loc = this.textColor;
+          this.textColor_Loc.push(this.themeColor);
+        }
+        else if (this.textColor.length === 1) this.textColor_Loc = [this.textColor[0], this.textColor[0], this.textColor[0]];
+        else {
+          this.textColor_Loc = this.darkMode ? DARK_TEXT_COLOR : LIGHT_TEXT_COLOR;
+          this.textColor_Loc[2] = this.themeColor;
+        }
       }
-      else this.deLabelColor_loc = this.deLabelColor;
     },
     handleClick(ev) {
       this.$emit('onClick', ev);
@@ -158,23 +165,23 @@ export default {
   display: inline-block;
 }
 .flex-center {
-  color: v-bind('deLabelColor_loc');
+  color: v-bind('textColor_Loc[0]');
   transition: .2s;
   font-size: v-bind('fontSize[size_loc]');
 }
 .fox_button:hover .flex-center{
-  text-shadow: 0 0 5px v-bind('labelColor_loc'),
+  text-shadow: 0 0 5px v-bind('textColor_Loc[1]'),
                0 0 10px v-bind('themeColor'),
                0 0 15px v-bind('themeColor'),
                0 0 35px v-bind('themeColor');
-  color: v-bind('labelColor_loc');
+  color: v-bind('textColor_Loc[1]');
 }
 .fox_button:active .flex-center{
-  text-shadow: 0 0 15px v-bind('labelColor_loc'),
+  text-shadow: 0 0 15px v-bind('textColor_Loc[1]'),
                0 0 20px v-bind('themeColor'),
                0 0 25px v-bind('themeColor'),
                0 0 45px v-bind('themeColor');
-  color: v-bind('themeColor');
+  color: v-bind('textColor_Loc[2]');
   transform: scale(0.98);
 }
 </style>
