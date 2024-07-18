@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div v-if="false"class="testArea">
+    <div v-if="true"class="testArea">
       <fox_slider :arrData="arr_1"></fox_slider>
     </div>
     <div v-if="false" class="testArea">
@@ -35,7 +35,7 @@
         </fox_collapse_item>
       </fox_collapse>
     </div>
-    <div v-if="true" class="testArea">
+    <div v-if="false" class="testArea">
       <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="true">
         <fox_collapse_item :label="'test11'" :position="'bottom'" :expand="false">
           <template v-slot:header1>

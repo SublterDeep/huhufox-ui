@@ -213,6 +213,25 @@ export default {
       this.handleBtnStyle();
       this.handleContainerPos(0);
     },
+    handleSwipeJudge() {
+      this.transitionAnim = true;
+      // 快速滑动判定
+      if (this.touchDuration < SHOT_SWIPE_TIME && (Math.abs(this.touchDis) > this.singleContainerWidth * SHOT_SWIPE_DIS)) {
+        this.handleArrowBTNclick(this.touchDis <= 0 ? true : false);
+        this.touchDis = 0;
+        return;
+      }
+      // 普通滑动判定
+      if (this.touchDuration >= SHOT_SWIPE_TIME && (Math.abs(this.touchDis) > this.singleContainerWidth * LONG_SWIPE_DIS)) {
+        this.handleArrowBTNclick(this.touchDis <= 0 ? true : false);
+        this.touchDis = 0;
+        return;
+      }
+      this.$nextTick(()=>{
+        this.touchDis = 0;
+        // for(let i=this.touchDis; i>0;i--) this.touchDis = i;
+      });
+    },
     handleMousestart(ev) {
       if (!this.mouseSwipe) return;
       this.isMouseDown =  true;
@@ -242,21 +261,7 @@ export default {
         y: ev.clientY
       };
       this.touchDis = Math.floor(this.touchPos[1].x - this.touchPos[0].x);
-      // 快速滑动判定
-      if (this.touchDuration < SHOT_SWIPE_TIME && (Math.abs(this.touchDis) > this.singleContainerWidth * SHOT_SWIPE_DIS)) {
-        this.handleArrowBTNclick(this.touchDis <= 0 ? true : false);
-        this.touchDis = 0;
-        return;
-      }
-      // 普通滑动判定
-      if (this.touchDuration >= SHOT_SWIPE_TIME && (Math.abs(this.touchDis) > this.singleContainerWidth * LONG_SWIPE_DIS)) {
-        this.handleArrowBTNclick(this.touchDis <= 0 ? true : false);
-        this.touchDis = 0;
-        return;
-      }
-      this.$nextTick(()=>{
-        this.touchDis = 0;
-      });
+      this.handleSwipeJudge();
     },
     // 移动端滑动屏幕处理函数
     handleTouchstart(ev) {
@@ -283,21 +288,7 @@ export default {
         y: ev.changedTouches[0].clientY
       };
       this.touchDis = Math.floor(this.touchPos[1].x - this.touchPos[0].x);
-      // 快速滑动判定
-      if (this.touchDuration < SHOT_SWIPE_TIME && (Math.abs(this.touchDis) > this.singleContainerWidth * SHOT_SWIPE_DIS)) {
-        this.handleArrowBTNclick(this.touchDis <= 0 ? true : false);
-        this.touchDis = 0;
-        return;
-      }
-      // 普通滑动判定
-      if (this.touchDuration >= SHOT_SWIPE_TIME && (Math.abs(this.touchDis) > this.singleContainerWidth * LONG_SWIPE_DIS)) {
-        this.handleArrowBTNclick(this.touchDis <= 0 ? true : false);
-        this.touchDis = 0;
-        return;
-      }
-      this.$nextTick(()=>{
-        this.touchDis = 0;
-      });
+      this.handleSwipeJudge();
     },
     // 组件大小变动处理函数
     handleResize (ev) {
@@ -308,7 +299,7 @@ export default {
       this.isMouseDown = false;
       this.currentAutoScroll = !hover;
       this.currentAlwaysShowArrow = hover;
-      if (!hover) this.touchDis = 0;
+      if (!hover) this.handleSwipeJudge();
     },
     // 初始化组件样式函数
     handleBtnStyle () {
