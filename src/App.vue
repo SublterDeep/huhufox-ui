@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-    <div v-if="true"class="testArea">
+  <div id="app" ref="app">
+    <div v-if="false"class="testArea">
       <fox_slider :arrData="arr_1"></fox_slider>
     </div>
     <div v-if="false" class="testArea">
@@ -35,21 +35,22 @@
         </fox_collapse_item>
       </fox_collapse>
     </div>
-    <div v-if="false" class="testArea">
-      <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="true">
-        <fox_collapse_item :label="'test11'" :position="'bottom'" :expand="false">
-          <template v-slot:header1>
-            <div>test bottom</div>
-          </template>
-          <template #bottom1>ttt</template>
-          <template #icon1>icon</template>
-          <template #bottomText1>ddd</template>
-          content1
+    <div v-if="true" class="testArea">
+      <div style="height: 1000px;background-color: #eee;">超级长一大段内容</div>
+    </div>
+    <div v-if="true" class="testArea">
+      <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false" :sticky="false">
+        <!-- <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">label 4</fox_collapse_item> -->
+        <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightcoral" :position="'bottom'" :sticky="true">
+          <div style="height: 600px; background-color: lightseagreen;" class="flex-center">吸底效果开启</div>
         </fox_collapse_item>
-        <fox_collapse_item :label="'label 2'" :position="'bottom'" :bottomText="[123, 222]">label 2</fox_collapse_item>
-        <fox_collapse_item :label="'label 3'" :position="'bottom'" :showIcon="true" :lockContent="false">label 3</fox_collapse_item>
-        <fox_collapse_item :label="'label 4'" :position="'bottom'">label 4</fox_collapse_item>
+        <!-- <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">label 4</fox_collapse_item> -->
+        <!-- <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">label 4</fox_collapse_item> -->
+        <!-- <fox_collapse_item :label="'label 4'" :position="'bottom'">label 4</fox_collapse_item> -->
       </fox_collapse>
+    </div>
+    <div v-if="true" class="testArea">
+      <div style="height: 1000px;background-color: #eee;">超级长一大段内容</div>
     </div>
     <div v-if="false" class="testArea">
       <fox_collapse>

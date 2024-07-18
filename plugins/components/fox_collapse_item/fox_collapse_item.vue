@@ -1,5 +1,6 @@
 <template>
   <div class="root">
+    <!-- 标题区 -->
     <header class="flex-center" :class="position" @click.stop="setOpen(!open)">
       <div v-if="('header' in $slots)" style="width: 100%"><slot name="header"></slot></div>
       <div v-else>{{label}}</div>
@@ -8,16 +9,18 @@
       </span>
       <span v-else-if="('icon' in $slots)"><slot name="icon"></slot></span>
     </header>
-    <section :style="{height: open ? height : '0px'}">
+    <!-- 内容区 -->
+    <section :style="{height: open ? height : '0px'}" ref="sectionContainer">
       <div class="container" ref="container"><slot></slot></div>
     </section>
-    <footer @click.stop="setOpen(!open)"  v-if="(position==='bottom') && !('bottom' in $slots)">
+    <!-- 底部展开按钮区 -->
+    <footer @click.stop="setOpen(!open)" :class="stickyOn?'fixed':''"  v-if="(position==='bottom') && !('bottom' in $slots)">
       <span v-if="!('icon' in $slots) && showIconLoc" :class="(open ? 'iconfont icon-arrow-down active_bottom nsel' : 'iconfont icon-arrow-down nsel')"></span>
       <span v-else><slot name="icon"></slot></span>
       <span v-if="!('bottomText' in $slots)"class="desc">{{ open?bottomTextLoc[1]:bottomTextLoc[0] }}</span>
       <span v-else class="desc"><slot name="bottomText"></slot></span>
     </footer>
-    <footer @click.stop="setOpen(!open)"  v-else-if="('bottom' in $slots)"><slot name="bottom"></slot></footer>
+    <footer @click.stop="setOpen(!open)" :class="stickyLoc?'fixed':''"  v-else-if="('bottom' in $slots)"><slot name="bottom"></slot></footer>
   </div>
 </template>
 
@@ -26,19 +29,6 @@ const DEFAULT_BOTTOM_TEXT = ['展开', '收起'];
 import '../../style.css';
 export default {
   name: 'fox_collapse_item',
-  data() {
-    return {
-      index: -1,
-      height: '100px',
-      open: false,
-      borderColorLoc: '#DCDFE6',
-      hoverColorLoc: '#409EFF',
-      contentColorLoc: '#FAFAFA',
-      bottomTextLoc: DEFAULT_BOTTOM_TEXT,
-      showIconLoc: true,
-      lockContentLoc: false,
-    }
-  },
   props: {
     label: {  }, // 列表项标题文字
     position: { // 展开图标位置
@@ -72,13 +62,39 @@ export default {
       type: Boolean,
       default: null,
     },
+    sticky: { // 吸底效果 接受布尔值(影响所有直接子列表项)
+      default: null,
+    },
+  },
+  data() {
+    return {
+      index: -1,
+      height: '100px',
+      open: false,
+      borderColorLoc: '#DCDFE6',
+      hoverColorLoc: '#409EFF',
+      contentColorLoc: '#FAFAFA',
+      bottomTextLoc: DEFAULT_BOTTOM_TEXT,
+      showIconLoc: true,
+      lockContentLoc: false,
+      stickyLoc: false,
+      stickyOn: false,
+      stickyPos: 0,
+    }
   },
   watch: {
     open(nval) {
       this.height = this.$refs.container.getBoundingClientRect().height + 'px';
       this.$parent.onResize(nval?1:-1, this.height);
       this.$parent.onChange(this.index, nval);
-    }
+      setTimeout(() => {
+        this.setStickyOn();
+      }, 150);
+    },
+    // 吸底效果变动后提交给父组件 标明吸底效果打开状态/自身_uid
+    stickyOn(nval) {
+      this.$parent.handleStickyItem(nval, this.$vnode.context._uid);
+    },
   },
   mounted() {
     this.init();
@@ -90,6 +106,7 @@ export default {
       this.setColor('hoverColor', this.hoverColor);
       this.setButtonText(DEFAULT_BOTTOM_TEXT);
       this.setExpand((_.isNull(this.expand)) ? false : this.expand);
+      this.setSticky((_.isNull(this.sticky)) ? false : this.sticky);
     },
     setIndex(idx) {
       this.index = idx;
@@ -129,6 +146,25 @@ export default {
     setLockContent(target) {
       if (!_.isNull(this.lockContent)) target = this.lockContent; // 如果列表项自身接收到参数，则优先按照自身参数进行设置
       this.lockContentLoc = target;
+    },
+    setSticky(target) {
+      if (!_.isNull(this.sticky)) target = this.sticky; // 如果列表项自身接收到参数，则优先按照自身参数进行设置
+      this.stickyLoc = target || false;
+    },
+    setStickyOn() {
+      if (!this.stickyLoc) return;
+      let docHeight = document.documentElement.clientHeight; // 窗口可视区高度
+      let containerTopDis = this.$refs.sectionContainer.getBoundingClientRect().top - docHeight; // 内容区顶部距离页面顶距离
+      let containerBotDis = this.$refs.sectionContainer.getBoundingClientRect().top + this.$refs.sectionContainer.clientHeight - docHeight; // 内容区底部距离页面顶距离
+
+      // 当 内容区顶部距离页面顶距离 < 0 且 内容区底部距离页面顶距离 > 0 且 折叠列表项为打开状态 时
+      if (containerTopDis < 0 && containerBotDis > 0 && this.open) {
+        // 触发footer吸底效果
+        this.stickyOn = true;
+      }
+      else {
+        this.stickyOn = false;
+      }
     },
   },
 }
@@ -200,5 +236,9 @@ section {
 }
 .active_bottom {
   transform: rotate(180deg);
+}
+.fixed {
+  position: fixed;
+  bottom: v-bind('stickyPos'); left: 0; right: 0; margin: auto;
 }
 </style>
