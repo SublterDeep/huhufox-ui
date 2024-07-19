@@ -49,6 +49,7 @@ export default {
       pNode: null, // 父指针(只指向外层的折叠面板)
       scrollListener: null,
       stickyChildList: [], // 所有开启吸底效果的子列表项集合
+      stickyOnObj: {}, // 正在开启吸底效果的子列表项id集合
     }
   },
   watch: {
@@ -155,8 +156,8 @@ export default {
     handleDocScrollListener(open) {
       if (open) {
         if (_.isNull(this.scrollListener)) {
-          // 添加监听
-          this.scrollListener = document.addEventListener('scroll', this.handleScroll);
+          // 添加监听 -- 吸底效果功能暂不支持嵌套！
+          if (_.isNull(this.pNode)) this.scrollListener = document.addEventListener('scroll', this.handleScroll);
         }
         // 初始化所有需要监听的子列表项元素对象列表
         let arrStickyChildList = [];
@@ -176,14 +177,38 @@ export default {
     // 刷新所有开启吸底效果的吸底检测
     handleScroll() {
       this.stickyChildList.forEach(elm => {
-        // document.documentElement.scrollTop
-        elm.setStickyOn();
+        if (_.isNull(this.pNode)) elm.setStickyOn(); // document.documentElement.scrollTop
       });
     },
     // 当直接子列表项吸底效果状态变化
-    handleStickyItem(state, id) {
-      console.log(state);
-      console.log(id);
+    handleStickyItem(state, id, pid=null) {
+      if (_.isNull(pid)) {
+        // 在当前层对象进行修改
+        if (state) {
+          if (!(id in this.stickyOnObj)) {
+            this.stickyOnObj[id] = {};
+          }
+        }
+        else {
+          if (id in this.stickyOnObj) delete this.stickyOnObj[id]
+        }
+      }
+      else {
+      }
+      // 如果存在父节点，将修改过后的对象传递给父节点
+      if (!(_.isNull(this.pNode))) {
+        this.pNode.$parent.handleStickyItem(state, id, this.pNode._uid);
+      }
+      // 如果不存在父节点，开始按从外到内的顺序递归分配每一层每个折叠元素的位置
+      else {
+        // console.log(JSON.stringify(this.stickyOnObj));
+        // this.handleStickyPos(0);
+      }
+    },
+    handleStickyPos(pos) {
+      for (let elm in this.stickyChildList) {
+        // console.log(this.stickyChildList[elm]);
+      }
     },
   },
 }

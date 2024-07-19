@@ -3,7 +3,8 @@
     <!-- 标题区 -->
     <header class="flex-center" :class="position" @click.stop="setOpen(!open)">
       <div v-if="('header' in $slots)" style="width: 100%"><slot name="header"></slot></div>
-      <div v-else>{{label}}</div>
+      <!-- <div v-else>{{label}}</div> -->
+      <div v-else>{{ _uid }}</div>
       <span v-if="(position==='left' || position==='right') && !('icon' in $slots)">
         <span v-if="showIconLoc" :class="(open ? 'iconfont icon-arrow-right nsel active' : 'iconfont icon-arrow-right nsel')"></span>
       </span>
@@ -11,7 +12,9 @@
     </header>
     <!-- 内容区 -->
     <section :style="{height: open ? height : '0px'}" ref="sectionContainer">
-      <div class="container" ref="container"><slot></slot></div>
+      <div class="container" ref="container">
+        <slot></slot>
+      </div>
     </section>
     <!-- 底部展开按钮区 -->
     <footer @click.stop="setOpen(!open)" :class="stickyOn?'fixed':''"  v-if="(position==='bottom') && !('bottom' in $slots)">
@@ -68,18 +71,19 @@ export default {
   },
   data() {
     return {
-      index: -1,
-      height: '100px',
-      open: false,
+      index: -1, // 每个折叠列表项会被初始化一个唯一id
+      height: '100px', // 内容区高度
+      open: false, // 是否展开
       borderColorLoc: '#DCDFE6',
       hoverColorLoc: '#409EFF',
-      contentColorLoc: '#FAFAFA',
-      bottomTextLoc: DEFAULT_BOTTOM_TEXT,
-      showIconLoc: true,
-      lockContentLoc: false,
-      stickyLoc: false,
-      stickyOn: false,
-      stickyPos: 0,
+      contentColorLoc: '#FAFAFA', 
+      bottomTextLoc: DEFAULT_BOTTOM_TEXT, // footer按钮文本
+      showIconLoc: true, // 是否显示图标
+      lockContentLoc: false, // 锁定内容区
+      stickyLoc: false, // 是否开启了吸底效果功能
+      stickyOn: false, // footer是否满足了吸底效果开启条件
+      stickyPos: 0, // 吸底效果开始时可能同时存在多个footer，每个footer距离屏幕可视区底部的距离 - 待完成
+      footerWidth: 0, // 吸底效果开启时footer的宽度 - 开启吸底效果前重新计算此项
     }
   },
   watch: {
@@ -88,12 +92,13 @@ export default {
       this.$parent.onResize(nval?1:-1, this.height);
       this.$parent.onChange(this.index, nval);
       setTimeout(() => {
-        this.setStickyOn();
+        this.$parent.handleScroll();
+        // this.setStickyOn();
       }, 150);
     },
     // 吸底效果变动后提交给父组件 标明吸底效果打开状态/自身_uid
     stickyOn(nval) {
-      this.$parent.handleStickyItem(nval, this.$vnode.context._uid);
+      this.$parent.handleStickyItem(nval, this._uid);
     },
   },
   mounted() {
@@ -160,6 +165,7 @@ export default {
       // 当 内容区顶部距离页面顶距离 < 0 且 内容区底部距离页面顶距离 > 0 且 折叠列表项为打开状态 时
       if (containerTopDis < 0 && containerBotDis > 0 && this.open) {
         // 触发footer吸底效果
+        this.footerWidth = this.$refs.sectionContainer.offsetWidth + 'px';
         this.stickyOn = true;
       }
       else {
@@ -238,6 +244,8 @@ section {
   transform: rotate(180deg);
 }
 .fixed {
+  width: v-bind('footerWidth');
+  background-color: #fff;
   position: fixed;
   bottom: v-bind('stickyPos'); left: 0; right: 0; margin: auto;
 }
