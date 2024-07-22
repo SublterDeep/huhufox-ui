@@ -52,6 +52,34 @@
                     <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightyellow" :position="'bottom'" :sticky="true">
                       <div style="padding: 250px 0;background-color: yellow;" class="flex-center">
                         
+                        <!-- <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false" :sticky="false">
+                          <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightblue" :position="'bottom'" :sticky="true">
+                            <div style="padding: 250px 0;background-color: lightskyblue;" class="flex-center">
+                              
+                              <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false" :sticky="false">
+                                <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightyellow" :position="'bottom'" :sticky="true">
+                                  <div style="padding: 250px 0;background-color: yellow;" class="flex-center">
+                                    
+                                  </div>
+                                </fox_collapse_item>
+                              </fox_collapse>
+                            </div>
+                          </fox_collapse_item>
+                        </fox_collapse> -->
+                      </div>
+                    </fox_collapse_item>
+                  </fox_collapse>
+                </div>
+              </fox_collapse_item>
+            </fox_collapse>
+            <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false" :sticky="false">
+              <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightblue" :position="'bottom'" :sticky="true">
+                <div style="padding: 250px 0;background-color: lightskyblue;" class="flex-center">
+                  
+                  <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false" :sticky="false">
+                    <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightyellow" :position="'bottom'" :sticky="true">
+                      <div style="padding: 250px 0;background-color: yellow;" class="flex-center">
+                        
                       </div>
                     </fox_collapse_item>
                   </fox_collapse>

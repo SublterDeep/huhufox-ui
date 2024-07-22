@@ -47,27 +47,28 @@ export default {
     return {
       index: -1,
       pNode: null, // 父指针(只指向外层的折叠面板)
-      scrollListener: null,
       stickyChildList: [], // 所有开启吸底效果的子列表项集合
       stickyOnObj: {}, // 正在开启吸底效果的子列表项id集合
     }
   },
   watch: {
+    stickyChildList: {
+      handler: (nval) => {
+        // console.log(nval);
+      },
+      deep: true,
+    }
+  },
+  beforeMount() {
+    this.initPnode();
   },
   mounted() {
     this.init();
-  },
-  deactivated() {
-    this.handleDocScrollListener(false);
-  },
-  beforeDestroy() {
-    this.handleDocScrollListener(false);
   },
   methods: {
     init() {
       this.initStyle();
       this.initPnode();
-      if (!(_.isNull(this.sticky))) this.handleDocScrollListener(true);
     },
     initStyle() {
       let arrExpand = this.analysisExpand();
@@ -118,8 +119,8 @@ export default {
       }
       return arrRes;
     },
+    // 设置列表的父节点(如果父节点为列表项)
     initPnode() {
-      // 设置列表的父节点(如果父节点为列表项)
       if (this.$parent.$options._componentTag === "fox_collapse_item") {
         if ('header' in this.$parent.$slots) {
           let inHeader = false;
@@ -152,63 +153,120 @@ export default {
         this.pNode.$parent.onResize(mut, height);
       }
     },
-    // 页面滚动监听 - 触发方式为子 组件调用 / 参数sticky传递了数值
-    handleDocScrollListener(open) {
-      if (open) {
-        if (_.isNull(this.scrollListener)) {
-          // 添加监听 -- 吸底效果功能暂不支持嵌套！
-          if (_.isNull(this.pNode)) this.scrollListener = document.addEventListener('scroll', this.handleScroll);
-        }
-        // 初始化所有需要监听的子列表项元素对象列表
-        let arrStickyChildList = [];
-        for (let i=0 ; i<this.$children.length ; i++) {
-          if (this.$children[i]._data.stickyLoc) arrStickyChildList.push(this.$children[i]);
-        }
-        this.stickyChildList = arrStickyChildList;
-        // console.log(this.stickyChildList);
+    // 注册所有开启了吸底效果的子组件
+    registStickyChild(node) {
+      if (_.isNull(this.pNode)) {
+        this.stickyChildList.push(node);
       }
       else {
-        if (!(_.isNull(this.scrollListener))) {
-          // 取消监听
-          document.removeEventListener(this.scrollListener);
-        }
+        this.pNode.$parent.registStickyChild(node);
       }
-    },
-    // 刷新所有开启吸底效果的吸底检测
-    handleScroll() {
-      this.stickyChildList.forEach(elm => {
-        if (_.isNull(this.pNode)) elm.setStickyOn(); // document.documentElement.scrollTop
-      });
     },
     // 当直接子列表项吸底效果状态变化
-    handleStickyItem(state, id, pid=null) {
-      if (_.isNull(pid)) {
-        // 在当前层对象进行修改
-        if (state) {
-          if (!(id in this.stickyOnObj)) {
-            this.stickyOnObj[id] = {};
+    handleStickyItem() {
+      if (_.isNull(this.pNode)) {
+        console.log('重新计算所有子组件的位置和开关状态');
+        // console.log(this.stickyChildList);
+        let arr = [];
+        for (let elm in this.stickyChildList) {
+          let p = this.stickyChildList[elm].$parent.pNode;
+          let puid = (_.isNull(p)) ? null : p._uid;
+          let obj = {
+            _uid: this.stickyChildList[elm]._uid,
+            pNode: p,
+            _puid: puid,
           }
+          if (this.stickyChildList[elm].stickyOn) arr.push(obj);
+          this.stickyChildList[elm].setStickyOn(true);
         }
-        else {
-          if (id in this.stickyOnObj) delete this.stickyOnObj[id]
-        }
+        // console.log(arr);
+        // 创建一个空对象，用于存储层级结构
+        const hierarchy = this.buildHierarchy(arr);
+        // console.log(JSON.stringify(hierarchy));
+        // 创建一个空数组，扁平化层级结构并记录每个节点的层级深度
+        const flattenedResult = this.flattenObject(hierarchy);
+        const resultArray = Object.entries(flattenedResult).map(([key, value]) => ({ [key]: value }));
+        this.setChildStickyPos(resultArray);
+
       }
       else {
-      }
-      // 如果存在父节点，将修改过后的对象传递给父节点
-      if (!(_.isNull(this.pNode))) {
-        this.pNode.$parent.handleStickyItem(state, id, this.pNode._uid);
-      }
-      // 如果不存在父节点，开始按从外到内的顺序递归分配每一层每个折叠元素的位置
-      else {
-        // console.log(JSON.stringify(this.stickyOnObj));
-        // this.handleStickyPos(0);
+        this.pNode.$parent.handleStickyItem();
       }
     },
-    handleStickyPos(pos) {
-      for (let elm in this.stickyChildList) {
-        // console.log(this.stickyChildList[elm]);
+    // 按照嵌套层级设置每个子组件的吸底位置
+    setChildStickyPos(resArr) {
+      // 首先清空所有子组件的开启状态
+      for (let y = 0; y < this.stickyChildList.length; y++) {
+        // this.stickyChildList[y].setStickyPos(`0px`);
+        // this.stickyChildList[y].setStickyOn(false);
       }
+      let sortArr = resArr.sort((a, b) => {
+        let aKey = Object.keys(a);
+        let bKey = Object.keys(b);
+        return a[aKey[0]] - b[bKey[0]];
+      })
+      // console.log(sortArr);
+      for (let i = 0; i < sortArr.length; i++) {
+        let e = sortArr[i];
+        let uid = Object.keys(e);
+        // 单独设置每一个展开的子组件的位置
+        for (let y = 0; y < this.stickyChildList.length; y++) {
+          if (this.stickyChildList[y]._uid == uid[0]) {
+            let pos = `${i * 53}px`;
+            this.stickyChildList[y].setStickyPos(pos);
+            this.stickyChildList[y].setStickyOn();
+            break;
+          }
+        }
+      }
+    },
+    // 扁平化处理嵌套对象
+    flattenObject(obj, depth = 0, result = {}) {
+      for (const key in obj) {
+        result[key] = depth;
+        this.flattenObject(obj[key], depth + 1, result);
+      }
+      return result;
+    },
+    // 构建带有嵌套层级的对象
+    buildHierarchy(data) {
+      // Create an empty object to hold the final nested structure
+      const nestedStructure = {};
+
+      // Create a map to easily access nodes by their _uid
+      const nodeMap = {};
+
+      // Initialize the map with all nodes, each with an empty children object
+      data.forEach(item => {
+        nodeMap[item._uid] = { ...item, children: {} };
+      });
+
+      // Populate the nested structure by linking nodes to their parents
+      data.forEach(item => {
+        if (item._puid === null) {
+          // This is a root node
+          nestedStructure[item._uid] = nodeMap[item._uid];
+        } else {
+          // This is a child node, link it to its parent
+          if (!(_.isUndefined(nodeMap[item._puid]))) nodeMap[item._puid].children[item._uid] = nodeMap[item._uid];
+        }
+      });
+
+      // Function to recursively strip the extra properties and keep only the nested structure
+      function stripProperties(node) {
+        const { _uid, children } = node;
+        const strippedChildren = {};
+        for (const key in children) {
+          strippedChildren[key] = stripProperties(children[key]);
+        }
+        return strippedChildren;
+      }
+
+      const result = {};
+      for (const key in nestedStructure) {
+        result[key] = stripProperties(nestedStructure[key]);
+      }
+      return result;
     },
   },
 }
