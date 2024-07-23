@@ -5,7 +5,9 @@
 </template>
 
 <script>
+const FOOTER_HEIGHT = 50;
 import '../../style.css';
+import { throttle } from 'lodash';
 export default {
   name: 'fox_collapse',
   props: {
@@ -49,21 +51,22 @@ export default {
       pNode: null, // 父指针(只指向外层的折叠面板)
       stickyChildList: [], // 所有开启吸底效果的子列表项集合
       stickyOnObj: {}, // 正在开启吸底效果的子列表项id集合
+      scrollListener: null, // 滚动监听器对象
     }
   },
   watch: {
-    stickyChildList: {
-      handler: (nval) => {
-        // console.log(nval);
-      },
-      deep: true,
-    }
   },
   beforeMount() {
     this.initPnode();
   },
   mounted() {
     this.init();
+  },
+  deactivated() {
+    this.handleDocScrollListener(false);
+  },
+  beforeDestroy() {
+    this.handleDocScrollListener(false);
   },
   methods: {
     init() {
@@ -155,8 +158,9 @@ export default {
     },
     // 注册所有开启了吸底效果的子组件
     registStickyChild(node) {
-      if (_.isNull(this.pNode)) {
+      if (_.isNull(this.pNode)) { // 找到最外层的折叠面板组件
         this.stickyChildList.push(node);
+        this.handleDocScrollListener(true);
       }
       else {
         this.pNode.$parent.registStickyChild(node);
@@ -164,9 +168,8 @@ export default {
     },
     // 当直接子列表项吸底效果状态变化
     handleStickyItem() {
-      if (_.isNull(this.pNode)) {
-        console.log('重新计算所有子组件的位置和开关状态');
-        // console.log(this.stickyChildList);
+      if (_.isNull(this.pNode)) { // 找到最外层的折叠面板组件
+        // console.log('重新计算所有子组件的位置和开关状态');
         let arr = [];
         for (let elm in this.stickyChildList) {
           let p = this.stickyChildList[elm].$parent.pNode;
@@ -176,43 +179,33 @@ export default {
             pNode: p,
             _puid: puid,
           }
-          if (this.stickyChildList[elm].stickyOn) arr.push(obj);
+          if (this.stickyChildList[elm].open && this.stickyChildList[elm].judgeStickyState() && this.stickyChildList[elm].stickyLoc) arr.push(obj);
           this.stickyChildList[elm].setStickyOn(true);
         }
-        // console.log(arr);
         // 创建一个空对象，用于存储层级结构
-        const hierarchy = this.buildHierarchy(arr);
-        // console.log(JSON.stringify(hierarchy));
+        this.stickyOnObj = this.buildHierarchy(arr);
+        // console.log(JSON.stringify(this.stickyOnObj));
         // 创建一个空数组，扁平化层级结构并记录每个节点的层级深度
-        const flattenedResult = this.flattenObject(hierarchy);
+        const flattenedResult = this.flattenObject(this.stickyOnObj);
         const resultArray = Object.entries(flattenedResult).map(([key, value]) => ({ [key]: value }));
         this.setChildStickyPos(resultArray);
-
       }
-      else {
-        this.pNode.$parent.handleStickyItem();
-      }
+      else this.pNode.$parent.handleStickyItem();
     },
     // 按照嵌套层级设置每个子组件的吸底位置
     setChildStickyPos(resArr) {
-      // 首先清空所有子组件的开启状态
-      for (let y = 0; y < this.stickyChildList.length; y++) {
-        // this.stickyChildList[y].setStickyPos(`0px`);
-        // this.stickyChildList[y].setStickyOn(false);
-      }
       let sortArr = resArr.sort((a, b) => {
         let aKey = Object.keys(a);
         let bKey = Object.keys(b);
         return a[aKey[0]] - b[bKey[0]];
       })
-      // console.log(sortArr);
       for (let i = 0; i < sortArr.length; i++) {
         let e = sortArr[i];
         let uid = Object.keys(e);
         // 单独设置每一个展开的子组件的位置
         for (let y = 0; y < this.stickyChildList.length; y++) {
           if (this.stickyChildList[y]._uid == uid[0]) {
-            let pos = `${i * 53}px`;
+            let pos = `${i * FOOTER_HEIGHT}px`;
             this.stickyChildList[y].setStickyPos(pos);
             this.stickyChildList[y].setStickyOn();
             break;
@@ -230,29 +223,18 @@ export default {
     },
     // 构建带有嵌套层级的对象
     buildHierarchy(data) {
-      // Create an empty object to hold the final nested structure
       const nestedStructure = {};
-
-      // Create a map to easily access nodes by their _uid
       const nodeMap = {};
-
-      // Initialize the map with all nodes, each with an empty children object
       data.forEach(item => {
         nodeMap[item._uid] = { ...item, children: {} };
       });
-
-      // Populate the nested structure by linking nodes to their parents
       data.forEach(item => {
         if (item._puid === null) {
-          // This is a root node
           nestedStructure[item._uid] = nodeMap[item._uid];
         } else {
-          // This is a child node, link it to its parent
           if (!(_.isUndefined(nodeMap[item._puid]))) nodeMap[item._puid].children[item._uid] = nodeMap[item._uid];
         }
       });
-
-      // Function to recursively strip the extra properties and keep only the nested structure
       function stripProperties(node) {
         const { _uid, children } = node;
         const strippedChildren = {};
@@ -261,13 +243,31 @@ export default {
         }
         return strippedChildren;
       }
-
       const result = {};
       for (const key in nestedStructure) {
         result[key] = stripProperties(nestedStructure[key]);
       }
       return result;
     },
+    
+    // 页面滚动监听 - 触发方式为子 组件调用 / 参数sticky传递了数值
+    handleDocScrollListener(open) {
+      if (open) {
+        if (_.isNull(this.scrollListener)) {
+          this.scrollListener = document.addEventListener('scroll', this.handleScroll); // 添加监听
+        }
+      }
+      else {
+        if (!(_.isNull(this.scrollListener))) {
+          // 取消监听
+          document.removeEventListener(this.scrollListener);
+        }
+      }
+    },
+    // 刷新所有开启吸底效果的吸底检测
+    handleScroll: throttle(function(){
+      this.handleStickyItem();
+    }, 200),
   },
 }
 </script>

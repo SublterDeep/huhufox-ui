@@ -85,7 +85,6 @@ export default {
       stickyPos: '0px', // 吸底效果开始时可能同时存在多个footer，每个footer距离屏幕可视区底部的距离 - 待完成
       footerWidth: 0, // 吸底效果开启时footer的宽度 - 开启吸底效果前重新计算此项
       footerLeft: 0, // 吸底效果开启时footer距离左边可视区的距离 - 开启吸底效果前重新计算此项
-      scrollListener: null,
     }
   },
   watch: {
@@ -95,7 +94,7 @@ export default {
       this.$parent.onChange(this.index, nval);
       if (this.stickyLoc) {
         setTimeout(() => {
-          this.setStickyOn();
+          // this.setStickyOn();
           this.$parent.handleStickyItem();
         }, 150);
       }
@@ -104,7 +103,7 @@ export default {
     stickyOn(nval) {
       if (this.stickyLoc) {
         setTimeout(() => {
-          this.setStickyOn();
+          // this.setStickyOn();
           this.$parent.handleStickyItem();
         }, 150);
       }
@@ -116,12 +115,6 @@ export default {
   mounted() {
     this.init();
   },
-  deactivated() {
-    this.handleDocScrollListener(false);
-  },
-  beforeDestroy() {
-    this.handleDocScrollListener(false);
-  },
   methods: {
     init() {
       this.height = this.$refs.container.getBoundingClientRect().height + 'px';
@@ -130,7 +123,6 @@ export default {
       this.setButtonText(DEFAULT_BOTTOM_TEXT);
       this.setExpand((_.isNull(this.expand)) ? false : this.expand);
       this.setSticky((_.isNull(this.sticky)) ? false : this.sticky);
-      if (!(_.isNull(this.stickyLoc))) this.handleDocScrollListener(this.stickyLoc);
     },
     setIndex(idx) {
       this.index = idx;
@@ -178,6 +170,23 @@ export default {
         this.$parent.registStickyChild(this);
       }
     },
+    judgeStickyState() {
+      if (!this.stickyLoc) return false;
+      let docHeight = document.documentElement.clientHeight; // 窗口可视区高度
+      let containerTopDis = this.$refs.sectionContainer.getBoundingClientRect().top - docHeight; // 内容区顶部距离页面顶距离
+      let containerBotDis = this.$refs.sectionContainer.getBoundingClientRect().top + this.$refs.sectionContainer.clientHeight - docHeight; // 内容区底部距离页面顶距离
+
+      // 当 内容区顶部距离页面顶距离 < 0 且 内容区底部距离页面顶距离 > 0 且 折叠列表项为打开状态 时
+      if (containerTopDis < 0 && containerBotDis > 0 && this.open) {
+        // 触发footer吸底效果
+        this.footerWidth = this.$refs.sectionContainer.offsetWidth + 'px';
+        this.footerLeft = this.$refs.sectionContainer.getBoundingClientRect().left + 'px';
+        return true;
+      }
+      else {
+        return false;
+      }
+    },
     setStickyOn(focusOff = false) {
       if (!this.stickyLoc) return;
       let docHeight = document.documentElement.clientHeight; // 窗口可视区高度
@@ -185,8 +194,9 @@ export default {
       let containerBotDis = this.$refs.sectionContainer.getBoundingClientRect().top + this.$refs.sectionContainer.clientHeight - docHeight; // 内容区底部距离页面顶距离
 
       if (focusOff) {
+        // console.log('focus off!');
         this.stickyOn = false;
-        console.log('focus off!');
+        return;
       }
       // 当 内容区顶部距离页面顶距离 < 0 且 内容区底部距离页面顶距离 > 0 且 折叠列表项为打开状态 时
       if (containerTopDis < 0 && containerBotDis > 0 && this.open) {
@@ -201,24 +211,6 @@ export default {
     },
     setStickyPos(pos) {
       this.stickyPos = pos;
-    },
-    // 页面滚动监听 - 触发方式为子 组件调用 / 参数sticky传递了数值
-    handleDocScrollListener(open) {
-      if (open) {
-        if (_.isNull(this.scrollListener)) {
-          this.scrollListener = document.addEventListener('scroll', this.handleScroll); // 添加监听
-        }
-      }
-      else {
-        if (!(_.isNull(this.scrollListener))) {
-          // 取消监听
-          document.removeEventListener(this.scrollListener);
-        }
-      }
-    },
-    // 刷新所有开启吸底效果的吸底检测
-    handleScroll() {
-      this.setStickyOn(); // document.documentElement.scrollTop
     },
   },
 }

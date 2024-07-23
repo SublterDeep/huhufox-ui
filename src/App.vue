@@ -45,7 +45,7 @@
 
           <div style="padding: 250px 0;background-color: lightpink;" class="flex-center">
             <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false" :sticky="false">
-              <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightblue" :position="'bottom'" :sticky="true">
+              <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightblue" :position="'bottom'" :sticky="false">
                 <div style="padding: 250px 0;background-color: lightskyblue;" class="flex-center">
                   
                   <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false" :sticky="false">
