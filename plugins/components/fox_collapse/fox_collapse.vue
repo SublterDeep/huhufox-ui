@@ -7,7 +7,6 @@
 <script>
 const FOOTER_HEIGHT = 50;
 import '../../style.css';
-import { throttle } from 'lodash';
 export default {
   name: 'fox_collapse',
   props: {
@@ -143,6 +142,7 @@ export default {
         else this.pNode = this.$parent;
       }
     },
+    // 设置自定义容器滚动监听
     setScrollContainer(obj = null) {
       let defaultObj = null;
       if (_.isUndefined(this.$foxConfig.scrollContainer) || (typeof this.$foxConfig.scrollContainer !== 'object')) defaultObj = document;
@@ -151,7 +151,7 @@ export default {
         this.scrollContainer = defaultObj;
       }
       else this.scrollContainer = obj;
-      console.log(this.scrollContainer);
+      // console.log(this.scrollContainer);
     },
     // 列表项展开折叠触发
     onChange(id, status) {
@@ -198,7 +198,7 @@ export default {
         }
         // 创建一个空对象，用于存储层级结构
         this.stickyOnObj = this.buildHierarchy(arr);
-        console.log(JSON.stringify(this.stickyOnObj));
+        console.log(this._uid + ' : ' + JSON.stringify(this.stickyOnObj));
         // 创建一个空数组，扁平化层级结构并记录每个节点的层级深度
         const flattenedResult = this.flattenObject(this.stickyOnObj);
         const resultArray = Object.entries(flattenedResult).map(([key, value]) => ({ [key]: value }));
@@ -266,25 +266,19 @@ export default {
 
     // 页面滚动监听 - 触发方式为子 组件调用 / 参数sticky传递了数值
     handleDocScrollListener(open) {
+      this.$foxEventBus.setList(this);
       if (open) {
-        if (_.isNull(this.scrollListener)) {
-          this.scrollListener = this.scrollContainer.addEventListener('scroll', this.handleScroll); // 添加监听
-        }
+        this.scrollContainer.addEventListener('scroll', this.$foxEventBus.handleScroll); // 添加监听
       }
       else {
-        if (!(_.isNull(this.scrollListener))) {
-          // 取消监听
-          this.scrollContainer.removeEventListener('scroll', this.scrollListener);
-        }
+        this.scrollContainer.removeEventListener('scroll', this.$foxEventBus.handleScroll); // 取消监听
       }
     },
     // 刷新所有开启吸底效果的吸底检测
-    // handleScroll() {
-    //   this.handleStickyItem();
-    // },
-    handleScroll: throttle(function () {
+    handleScroll() {
+      console.log(this._uid);
       this.handleStickyItem();
-    }, 25),
+    },
   },
 }
 </script>

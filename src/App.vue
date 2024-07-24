@@ -1,10 +1,11 @@
 <template>
   <div id="app" ref="app">
-    <div v-if="false"class="testArea" ref="testArea">
+    <div v-if="false" class="testArea" ref="testArea">
       <fox_slider :arrData="arr_1"></fox_slider>
     </div>
     <div v-if="false" class="testArea">
-      <fox_button :label="`点击切换${dmode?'白天':'深色'}模式`" @onClick="handleClick(...arguments, dmode)" :darkMode="dmode"></fox_button>
+      <fox_button :label="`点击切换${dmode ? '白天' : '深色'}模式`" @onClick="handleClick(...arguments, dmode)" :darkMode="dmode">
+      </fox_button>
       <fox_button :label="'BUTTON'" :iconPosition="'left'">
         <template #icon>
           <span class="iconfont icon-arrow-down"></span>
@@ -18,7 +19,7 @@
           <div style="width: 100px; height: 10px;" class="flex-center">BTN</div>
         </template>
       </fox_button>
-      <fox_button :label="'BUTTON'"  :borderRadius="'20px'" :bgColor="'white'" :themeColor="'red'"></fox_button>
+      <fox_button :label="'BUTTON'" :borderRadius="'20px'" :bgColor="'white'" :themeColor="'red'"></fox_button>
       <fox_button :label="'BUTTON'" darkMode :themeColor="'red'" :borderRadius="'20px'"></fox_button>
       <fox_button :label="'BUTTON'" darkMode :themeColor="'white'" :borderRadius="'20px'"></fox_button>
       <fox_button :label="'BUTTON'" darkMode mini :themeColor="'aqua'" :borderRadius="'auto'"></fox_button>
@@ -39,114 +40,101 @@
       <div style="height: 1000px;background-color: #eee;">超级长一大段内容</div>
     </div>
     <div v-if="true" class="testArea scrollArea" ref="scrollArea">
-      <fox_collapse ref="foxcollapse" :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false" :sticky="false">
-        <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">1234</fox_collapse_item>
-        <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightcoral" :position="'bottom'" :sticky="true">
-
-          <div style="padding: 250px 0;background-color: lightpink;" class="flex-center">
-            <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false" :sticky="false">
-              <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightblue" :position="'bottom'" :sticky="false">
-                <div style="padding: 250px 0;background-color: lightskyblue;" class="flex-center">
-                  
-                  <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false" :sticky="false">
-                    <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightyellow" :position="'bottom'" :sticky="true">
-                      <div style="padding: 250px 0;background-color: yellow;" class="flex-center">
-                        
-                        <!-- <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false" :sticky="false">
-                          <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightblue" :position="'bottom'" :sticky="true">
-                            <div style="padding: 250px 0;background-color: lightskyblue;" class="flex-center">
-                              
-                              <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false" :sticky="false">
-                                <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightyellow" :position="'bottom'" :sticky="true">
-                                  <div style="padding: 250px 0;background-color: yellow;" class="flex-center">
-                                    
-                                  </div>
-                                </fox_collapse_item>
-                              </fox_collapse>
-                            </div>
-                          </fox_collapse_item>
-                        </fox_collapse> -->
-                      </div>
-                    </fox_collapse_item>
-                  </fox_collapse>
-                </div>
-              </fox_collapse_item>
-            </fox_collapse>
-            <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false" :sticky="false">
-              <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightblue" :position="'bottom'" :sticky="true">
-                <div style="padding: 250px 0;background-color: lightskyblue;" class="flex-center">
-                  
-                  <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false" :sticky="false">
-                    <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightyellow" :position="'bottom'" :sticky="true">
-                      <div style="padding: 250px 0;background-color: yellow;" class="flex-center">
-                        
-                      </div>
-                    </fox_collapse_item>
-                  </fox_collapse>
-                </div>
-              </fox_collapse_item>
-            </fox_collapse>
-            <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false" :sticky="false">
-              <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightblue" :position="'bottom'" :sticky="true">
-                <div style="padding: 250px 0;background-color: lightskyblue;" class="flex-center">
-                  
-                  <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false" :sticky="false">
-                    <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightyellow" :position="'bottom'" :sticky="true">
-                      <div style="padding: 250px 0;background-color: yellow;" class="flex-center">
-                        
-                      </div>
-                    </fox_collapse_item>
-                  </fox_collapse>
-                </div>
-              </fox_collapse_item>
-            </fox_collapse>
-          </div>            
-        </fox_collapse_item>
-
-        <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">label 4</fox_collapse_item>
-        <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">label 4</fox_collapse_item>
-        <fox_collapse_item :label="'label 4'" :position="'bottom'">label 4</fox_collapse_item>
-      </fox_collapse>
+      <div class="copWrap">
+        <fox_collapse ref="foxcollapse" :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false"
+          :sticky="false">
+          <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">1234</fox_collapse_item>
+          <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightcoral" :position="'bottom'" :sticky="true">
+            <div style="padding: 100px 0;background-color: lightpink;">吸底效果开启</div>
+          </fox_collapse_item>
+          <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">label 4</fox_collapse_item>
+          <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightcoral" :position="'bottom'" :sticky="true">
+            <div style="padding: 100px 0;background-color: lightpink;">吸底效果开启</div>
+          </fox_collapse_item>
+          <fox_collapse_item :label="'label 4'" :position="'bottom'">label 4</fox_collapse_item>
+        </fox_collapse>
+      </div>
+      <div class="copWrap">
+        <fox_collapse ref="foxcollapse" :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false"
+          :sticky="false">
+          <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">1234</fox_collapse_item>
+          <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightcoral" :position="'bottom'" :sticky="true">
+            <div style="padding: 100px 0;background-color: lightpink;">吸底效果开启</div>
+          </fox_collapse_item>
+          <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">label 4</fox_collapse_item>
+          <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightcoral" :position="'bottom'" :sticky="true">
+            <div style="padding: 100px 0;background-color: lightpink;">吸底效果开启</div>
+          </fox_collapse_item>
+          <fox_collapse_item :label="'label 4'" :position="'bottom'">label 4</fox_collapse_item>
+        </fox_collapse>
+      </div>
+      <div class="copWrap">
+        <fox_collapse ref="foxcollapse" :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false"
+          :sticky="false">
+          <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">1234</fox_collapse_item>
+          <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightcoral" :position="'bottom'" :sticky="true">
+            <div style="padding: 100px 0;background-color: lightpink;">吸底效果开启</div>
+          </fox_collapse_item>
+          <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">label 4</fox_collapse_item>
+          <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">label 4</fox_collapse_item>
+          <fox_collapse_item :label="'label 4'" :position="'bottom'">label 4</fox_collapse_item>
+        </fox_collapse>
+      </div>
+      <div class="copWrap">
+        <fox_collapse ref="foxcollapse" :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false"
+          :sticky="false">
+          <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">1234</fox_collapse_item>
+          <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightcoral" :position="'bottom'" :sticky="true">
+            <div style="padding: 100px 0;background-color: lightpink;">吸底效果开启</div>
+          </fox_collapse_item>
+          <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">label 4</fox_collapse_item>
+          <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">label 4</fox_collapse_item>
+          <fox_collapse_item :label="'label 4'" :position="'bottom'">label 4</fox_collapse_item>
+        </fox_collapse>
+      </div>
     </div>
     <div v-if="false" class="testArea">
       <div style="height: 1000px;background-color: #eee;">超级长一大段内容</div>
     </div>
     <div v-if="false" class="testArea">
       <fox_collapse>
-        <fox_collapse_item :position="'bottom'"  class="displayArea">
+        <fox_collapse_item :position="'bottom'" class="displayArea">
           <template v-slot:header>
             <div>
-              
-            <!-- 展示内容 -->
-            <fox_collapse>
-              <fox_collapse_item :label="'文本1：嵌套两层折叠面板'" :position="'right'">
-                <fox_collapse>
-                  <fox_collapse_item :label="'文本1_1'" :position="'left'">1_1</fox_collapse_item>
-                  <fox_collapse_item :label="'文本1_2'" :position="'left'">1_2</fox_collapse_item>
-                </fox_collapse>
-              </fox_collapse_item>
-              <fox_collapse_item :label="'文本2'">2</fox_collapse_item>
-              <fox_collapse_item :label="'文本3：多层嵌套'">
-                <div class="desc m_b">设置了手风琴效果</div>
-                <fox_collapse accordion>
-                  <fox_collapse_item :label="'文本3_1'" :position="'left'">3_1</fox_collapse_item>
-                  <fox_collapse_item :label="'文本3_2'" :position="'left'">
-                    <fox_collapse>
-                      <fox_collapse_item :label="'文本3_2_1'" :position="'left'">3_2_1</fox_collapse_item>
-                      <fox_collapse_item :label="'文本3_2_2'" :position="'left'">
-                        <fox_collapse>
-                          <fox_collapse_item :label="'文本3_2_2_1'" :position="'left'">3_2_2_1</fox_collapse_item>
-                          <fox_collapse_item :label="'文本3_2_2_2'" :position="'left'">3_2_2_2：看晕了吗？别嵌套太多层比较好</fox_collapse_item>
-                        </fox_collapse>
-                      </fox_collapse_item>
-                    </fox_collapse>
-                  </fox_collapse_item>
-                </fox_collapse>
-              </fox_collapse_item>
-              <fox_collapse_item :label="'文本4'" :position="'bottom'">
-                <template v-slot:header><div class="tal">文本4：展开按钮图标在下方</div></template>4
-              </fox_collapse_item>
-            </fox_collapse>
+
+              <!-- 展示内容 -->
+              <fox_collapse>
+                <fox_collapse_item :label="'文本1：嵌套两层折叠面板'" :position="'right'">
+                  <fox_collapse>
+                    <fox_collapse_item :label="'文本1_1'" :position="'left'">1_1</fox_collapse_item>
+                    <fox_collapse_item :label="'文本1_2'" :position="'left'">1_2</fox_collapse_item>
+                  </fox_collapse>
+                </fox_collapse_item>
+                <fox_collapse_item :label="'文本2'">2</fox_collapse_item>
+                <fox_collapse_item :label="'文本3：多层嵌套'">
+                  <div class="desc m_b">设置了手风琴效果</div>
+                  <fox_collapse accordion>
+                    <fox_collapse_item :label="'文本3_1'" :position="'left'">3_1</fox_collapse_item>
+                    <fox_collapse_item :label="'文本3_2'" :position="'left'">
+                      <fox_collapse>
+                        <fox_collapse_item :label="'文本3_2_1'" :position="'left'">3_2_1</fox_collapse_item>
+                        <fox_collapse_item :label="'文本3_2_2'" :position="'left'">
+                          <fox_collapse>
+                            <fox_collapse_item :label="'文本3_2_2_1'" :position="'left'">3_2_2_1</fox_collapse_item>
+                            <fox_collapse_item :label="'文本3_2_2_2'" :position="'left'">3_2_2_2：看晕了吗？别嵌套太多层比较好
+                            </fox_collapse_item>
+                          </fox_collapse>
+                        </fox_collapse_item>
+                      </fox_collapse>
+                    </fox_collapse_item>
+                  </fox_collapse>
+                </fox_collapse_item>
+                <fox_collapse_item :label="'文本4'" :position="'bottom'">
+                  <template v-slot:header>
+                    <div class="tal">文本4：展开按钮图标在下方</div>
+                  </template>4
+                </fox_collapse_item>
+              </fox_collapse>
             </div>
           </template>
           <!-- 代码放这 -->
@@ -193,9 +181,9 @@ export default {
   methods: {
     handleClick(ev, d) {
       console.log(ev);
-      console.log('上次按钮状态:' + (d?'深色模式':'白天模式'));
+      console.log('上次按钮状态:' + (d ? '深色模式' : '白天模式'));
       this.dmode = !d;
-      console.log('变更状态为:' + (this.dmode?'深色模式':'白天模式'));
+      console.log('变更状态为:' + (this.dmode ? '深色模式' : '白天模式'));
     },
   },
 }
@@ -209,15 +197,21 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+
 .testArea {
-  width: 100%; padding: 15px 0;
+  width: 100%;
+  padding: 15px 0;
   box-sizing: border-box;
   background-color: #eaeaea;
   margin-bottom: 30px;
 }
+
 .scrollArea {
   height: 800px;
   overflow: auto;
   padding: 800px 0;
+}
+.copWrap {
+  margin: 400px 0;
 }
 </style>

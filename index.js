@@ -4,6 +4,8 @@ import fox_slider from "./plugins/components/fox_slider/index.js";
 import fox_button from "./plugins/components/fox_button/index.js";
 import fox_collapse from "./plugins/components/fox_collapse/index.js";
 import fox_collapse_item from "./plugins/components/fox_collapse_item/index.js";
+// 方法
+import { throttle } from 'lodash';
 
 //所有组件列表
 const components = [
@@ -24,6 +26,18 @@ const install = Vue => {
   components.map(component => Vue.component(component.name, component));
   Vue.prototype.$foxEventBus = new Vue();
   Vue.prototype.$foxConfig = new Vue();
+
+  Vue.prototype.$foxEventBus = new Vue();
+  Vue.prototype.$foxEventBus.collapseList = [];
+  Vue.prototype.$foxEventBus.setList = (node) => {
+    Vue.prototype.$foxEventBus.collapseList.push(node);
+  }
+  Vue.prototype.$foxEventBus.handleScroll = throttle(() => {
+    let arr = Vue.prototype.$foxEventBus.collapseList;
+    for (let i = 0; i < arr.length; i++) {
+      arr[i].handleScroll();
+    }
+  }, 50);
 };
 
 //检测到Vue再执行

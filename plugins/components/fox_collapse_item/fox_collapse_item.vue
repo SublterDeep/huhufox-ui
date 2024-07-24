@@ -2,28 +2,41 @@
   <div class="root">
     <!-- 标题区 -->
     <header class="flex-center" :class="position" @click.stop="setOpen(!open)">
-      <div v-if="('header' in $slots)" style="width: 100%"><slot name="header"></slot></div>
+      <div v-if="('header' in $slots)" style="width: 100%">
+        <slot name="header"></slot>
+      </div>
       <!-- <div v-else>{{label}}</div> -->
       <div v-else>{{ _uid }}</div>
-      <span v-if="(position==='left' || position==='right') && !('icon' in $slots)">
-        <span v-if="showIconLoc" :class="(open ? 'iconfont icon-arrow-right nsel active' : 'iconfont icon-arrow-right nsel')"></span>
+      <span v-if="(position === 'left' || position === 'right') && !('icon' in $slots)">
+        <span v-if="showIconLoc"
+          :class="(open ? 'iconfont icon-arrow-right nsel active' : 'iconfont icon-arrow-right nsel')"></span>
       </span>
-      <span v-else-if="('icon' in $slots)"><slot name="icon"></slot></span>
+      <span v-else-if="('icon' in $slots)">
+        <slot name="icon"></slot>
+      </span>
     </header>
     <!-- 内容区 -->
-    <section :style="{height: open ? height : '0px'}" ref="sectionContainer">
+    <section :style="{ height: open ? height : '0px' }" ref="sectionContainer">
       <div class="container" ref="container">
         <slot></slot>
       </div>
     </section>
     <!-- 底部展开按钮区 -->
-    <footer @click.stop="setOpen(!open)" :class="stickyOn?'fixed':''"  v-if="(position==='bottom') && !('bottom' in $slots)">
-      <span v-if="!('icon' in $slots) && showIconLoc" :class="(open ? 'iconfont icon-arrow-down active_bottom nsel' : 'iconfont icon-arrow-down nsel')"></span>
-      <span v-else><slot name="icon"></slot></span>
-      <span v-if="!('bottomText' in $slots)"class="desc">{{ open?bottomTextLoc[1]:bottomTextLoc[0] }}</span>
-      <span v-else class="desc"><slot name="bottomText"></slot></span>
+    <footer @click.stop="setOpen(!open)" :class="stickyOn ? 'fixed' : ''"
+      v-if="(position === 'bottom') && !('bottom' in $slots)">
+      <span v-if="!('icon' in $slots) && showIconLoc"
+        :class="(open ? 'iconfont icon-arrow-down active_bottom nsel' : 'iconfont icon-arrow-down nsel')"></span>
+      <span v-else>
+        <slot name="icon"></slot>
+      </span>
+      <span v-if="!('bottomText' in $slots)" class="desc">{{ open ? bottomTextLoc[1] : bottomTextLoc[0] }}</span>
+      <span v-else class="desc">
+        <slot name="bottomText"></slot>
+      </span>
     </footer>
-    <footer @click.stop="setOpen(!open)" :class="stickyOn?'fixed':''"  v-else-if="('bottom' in $slots)"><slot name="bottom"></slot></footer>
+    <footer @click.stop="setOpen(!open)" :class="stickyOn ? 'fixed' : ''" v-else-if="('bottom' in $slots)">
+      <slot name="bottom"></slot>
+    </footer>
   </div>
 </template>
 
@@ -33,7 +46,7 @@ import '../../style.css';
 export default {
   name: 'fox_collapse_item',
   props: {
-    label: {  }, // 列表项标题文字
+    label: {}, // 列表项标题文字
     position: { // 展开图标位置
       type: String,
       default: 'right',
@@ -76,7 +89,7 @@ export default {
       open: false, // 是否展开
       borderColorLoc: '#DCDFE6',
       hoverColorLoc: '#409EFF',
-      contentColorLoc: '#FAFAFA', 
+      contentColorLoc: '#FAFAFA',
       bottomTextLoc: DEFAULT_BOTTOM_TEXT, // footer按钮文本
       showIconLoc: true, // 是否显示图标
       lockContentLoc: false, // 锁定内容区
@@ -90,7 +103,7 @@ export default {
   watch: {
     open(nval) {
       this.height = this.$refs.container.getBoundingClientRect().height + 'px';
-      this.$parent.onResize(nval?1:-1, this.height);
+      this.$parent.onResize(nval ? 1 : -1, this.height);
       this.$parent.onChange(this.index, nval);
       if (this.stickyLoc) {
         setTimeout(() => {
@@ -203,10 +216,12 @@ export default {
   width: 100%;
   // position: relative;
 }
+
 header {
   box-sizing: border-box;
   padding: 15px;
 }
+
 footer {
   display: flex;
   justify-content: center;
@@ -217,19 +232,24 @@ footer {
   padding: 15px;
   border-top: 1px solid v-bind('borderColorLoc');
 }
+
 .desc {
   cursor: pointer;
   transition: .15s;
 }
-footer:hover .desc,footer:hover {
+
+footer:hover .desc,
+footer:hover {
   color: v-bind('hoverColorLoc');
 }
+
 section {
   box-sizing: border-box;
   padding: 0 10px;
   transition: .15s;
   overflow: hidden;
 }
+
 .container {
   box-sizing: border-box;
   padding: 10px 15px;
@@ -237,6 +257,7 @@ section {
   background-color: v-bind('contentColorLoc');
   margin-bottom: 5px;
 }
+
 .left {
   display: flex;
   flex-direction: row-reverse;
@@ -244,28 +265,35 @@ section {
   justify-content: flex-end;
   gap: 0 15px;
 }
+
 .right {
   display: flex;
   justify-content: space-between;
 }
+
 .bottom {
   width: 100%;
   justify-content: flex-start;
 }
+
 .iconfont {
   transition: .15s;
   display: inline-block;
   cursor: pointer;
 }
+
 .iconfont:hover {
   color: v-bind('hoverColorLoc');
 }
+
 .active {
   transform: rotate(90deg);
 }
+
 .active_bottom {
   transform: rotate(180deg);
 }
+
 .fixed {
   width: v-bind('footerWidth');
   background-color: #fff;
