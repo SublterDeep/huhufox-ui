@@ -5,8 +5,8 @@
       <div v-if="('header' in $slots)" style="width: 100%">
         <slot name="header"></slot>
       </div>
-      <!-- <div v-else>{{label}}</div> -->
-      <div v-else>{{ _uid }}</div>
+      <div v-else>{{label}}</div>
+      <!-- <div v-else>{{ _uid }}</div> -->
       <span v-if="(position === 'left' || position === 'right') && !('icon' in $slots)">
         <span v-if="showIconLoc"
           :class="(open ? 'iconfont icon-arrow-right nsel active' : 'iconfont icon-arrow-right nsel')"></span>
