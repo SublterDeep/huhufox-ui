@@ -198,7 +198,7 @@ export default {
         }
         // 创建一个空对象，用于存储层级结构
         this.stickyOnObj = this.buildHierarchy(arr);
-        console.log(this._uid + ' : ' + JSON.stringify(this.stickyOnObj));
+        // console.log(this._uid + ' : ' + JSON.stringify(this.stickyOnObj));
         // 创建一个空数组，扁平化层级结构并记录每个节点的层级深度
         const flattenedResult = this.flattenObject(this.stickyOnObj);
         const resultArray = Object.entries(flattenedResult).map(([key, value]) => ({ [key]: value }));
@@ -276,7 +276,6 @@ export default {
     },
     // 刷新所有开启吸底效果的吸底检测
     handleScroll() {
-      console.log(this._uid);
       this.handleStickyItem();
     },
   },

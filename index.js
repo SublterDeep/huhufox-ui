@@ -35,7 +35,11 @@ const install = Vue => {
   Vue.prototype.$foxEventBus.handleScroll = throttle(() => {
     let arr = Vue.prototype.$foxEventBus.collapseList;
     for (let i = 0; i < arr.length; i++) {
-      arr[i].handleScroll();
+      let isActive = true;
+      isActive = arr[i]._isMounted;
+      isActive = !arr[i]._isDestroyed;
+      isActive = !arr[i]._isBeingDestroyed;
+      if (isActive) arr[i].handleScroll();
     }
   }, 50);
 };
