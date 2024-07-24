@@ -22,6 +22,8 @@ const install = Vue => {
   install.installed = true;
   //遍历注册所有组件
   components.map(component => Vue.component(component.name, component));
+  Vue.prototype.$foxEventBus = new Vue();
+  Vue.prototype.$foxConfig = new Vue();
 };
 
 //检测到Vue再执行

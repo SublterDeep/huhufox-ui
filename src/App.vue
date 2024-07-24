@@ -1,6 +1,6 @@
 <template>
   <div id="app" ref="app">
-    <div v-if="false"class="testArea">
+    <div v-if="false"class="testArea" ref="testArea">
       <fox_slider :arrData="arr_1"></fox_slider>
     </div>
     <div v-if="false" class="testArea">
@@ -35,11 +35,11 @@
         </fox_collapse_item>
       </fox_collapse>
     </div>
-    <div v-if="true" class="testArea">
+    <div v-if="false" class="testArea">
       <div style="height: 1000px;background-color: #eee;">超级长一大段内容</div>
     </div>
-    <div v-if="true" class="testArea">
-      <fox_collapse :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false" :sticky="false">
+    <div v-if="true" class="testArea scrollArea" ref="scrollArea">
+      <fox_collapse ref="foxcollapse" :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false" :sticky="false">
         <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">1234</fox_collapse_item>
         <fox_collapse_item :label="'吸底效果开启'" style="background-color: lightcoral" :position="'bottom'" :sticky="true">
 
@@ -108,7 +108,7 @@
         <fox_collapse_item :label="'label 4'" :position="'bottom'">label 4</fox_collapse_item>
       </fox_collapse>
     </div>
-    <div v-if="true" class="testArea">
+    <div v-if="false" class="testArea">
       <div style="height: 1000px;background-color: #eee;">超级长一大段内容</div>
     </div>
     <div v-if="false" class="testArea">
@@ -179,11 +179,16 @@ export default {
       dmode: false,
     }
   },
+  beforeMount() {
+  },
   mounted() {
     /* setInterval(() => {
       this.dmode = !this.dmode;
       console.log(this.dmode);
     }, 1000); */
+    this.$foxConfig.scrollContainer = this.$refs.scrollArea; // 配置全局默认项滚动容器监听对象
+    // this.$foxConfig.scrollContainer = this.$refs.app; // 配置全局默认项滚动容器监听对象
+    // this.$refs.foxcollapse.setScrollContainer(12); // 单独配置滚动容器监听对象
   },
   methods: {
     handleClick(ev, d) {
@@ -209,5 +214,10 @@ export default {
   box-sizing: border-box;
   background-color: #eaeaea;
   margin-bottom: 30px;
+}
+.scrollArea {
+  height: 800px;
+  overflow: auto;
+  padding: 800px 0;
 }
 </style>

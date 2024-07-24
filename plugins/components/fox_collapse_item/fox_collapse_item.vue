@@ -23,7 +23,7 @@
       <span v-if="!('bottomText' in $slots)"class="desc">{{ open?bottomTextLoc[1]:bottomTextLoc[0] }}</span>
       <span v-else class="desc"><slot name="bottomText"></slot></span>
     </footer>
-    <footer @click.stop="setOpen(!open)" :class="stickyLoc?'fixed':''"  v-else-if="('bottom' in $slots)"><slot name="bottom"></slot></footer>
+    <footer @click.stop="setOpen(!open)" :class="stickyOn?'fixed':''"  v-else-if="('bottom' in $slots)"><slot name="bottom"></slot></footer>
   </div>
 </template>
 
@@ -109,7 +109,7 @@ export default {
       }
     },
     stickyPos(nval) {
-      console.log(nval);
+      // console.log(nval);
     },
   },
   mounted() {
@@ -189,25 +189,8 @@ export default {
     },
     setStickyOn(focusOff = false) {
       if (!this.stickyLoc) return;
-      let docHeight = document.documentElement.clientHeight; // 窗口可视区高度
-      let containerTopDis = this.$refs.sectionContainer.getBoundingClientRect().top - docHeight; // 内容区顶部距离页面顶距离
-      let containerBotDis = this.$refs.sectionContainer.getBoundingClientRect().top + this.$refs.sectionContainer.clientHeight - docHeight; // 内容区底部距离页面顶距离
-
-      if (focusOff) {
-        // console.log('focus off!');
-        this.stickyOn = false;
-        return;
-      }
-      // 当 内容区顶部距离页面顶距离 < 0 且 内容区底部距离页面顶距离 > 0 且 折叠列表项为打开状态 时
-      if (containerTopDis < 0 && containerBotDis > 0 && this.open) {
-        // 触发footer吸底效果
-        this.footerWidth = this.$refs.sectionContainer.offsetWidth + 'px';
-        this.footerLeft = this.$refs.sectionContainer.getBoundingClientRect().left + 'px';
-        this.stickyOn = true;
-      }
-      else {
-        this.stickyOn = false;
-      }
+      this.stickyOn = focusOff;
+      return;
     },
     setStickyPos(pos) {
       this.stickyPos = pos;
@@ -289,5 +272,6 @@ section {
   position: fixed;
   bottom: v-bind('stickyPos');
   left: v-bind('footerLeft');
+  z-index: 9;
 }
 </style>

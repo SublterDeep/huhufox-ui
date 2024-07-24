@@ -52,6 +52,7 @@ export default {
       stickyChildList: [], // 所有开启吸底效果的子列表项集合
       stickyOnObj: {}, // 正在开启吸底效果的子列表项id集合
       scrollListener: null, // 滚动监听器对象
+      scrollContainer: document, // 吸底效果滚动监听的对象(默认为document)
     }
   },
   watch: {
@@ -72,6 +73,10 @@ export default {
     init() {
       this.initStyle();
       this.initPnode();
+      setTimeout(() => {
+        this.setScrollContainer();
+        this.handleDocScrollListener(true);
+      }, 0);
     },
     initStyle() {
       let arrExpand = this.analysisExpand();
@@ -138,6 +143,16 @@ export default {
         else this.pNode = this.$parent;
       }
     },
+    setScrollContainer(obj = null) {
+      let defaultObj = null;
+      if (_.isUndefined(this.$foxConfig.scrollContainer) || (typeof this.$foxConfig.scrollContainer !== 'object')) defaultObj = document;
+      else defaultObj = this.$foxConfig.scrollContainer;
+      if (_.isNull(obj) || (typeof obj !== 'object')) {
+        this.scrollContainer = defaultObj;
+      }
+      else this.scrollContainer = obj;
+      console.log(this.scrollContainer);
+    },
     // 列表项展开折叠触发
     onChange(id, status) {
       if (status && this.accordion) this.handleChildListStatus(id);
@@ -160,7 +175,6 @@ export default {
     registStickyChild(node) {
       if (_.isNull(this.pNode)) { // 找到最外层的折叠面板组件
         this.stickyChildList.push(node);
-        this.handleDocScrollListener(true);
       }
       else {
         this.pNode.$parent.registStickyChild(node);
@@ -180,11 +194,11 @@ export default {
             _puid: puid,
           }
           if (this.stickyChildList[elm].open && this.stickyChildList[elm].judgeStickyState() && this.stickyChildList[elm].stickyLoc) arr.push(obj);
-          this.stickyChildList[elm].setStickyOn(true);
+          this.stickyChildList[elm].setStickyOn(false); // 关闭所有
         }
         // 创建一个空对象，用于存储层级结构
         this.stickyOnObj = this.buildHierarchy(arr);
-        // console.log(JSON.stringify(this.stickyOnObj));
+        console.log(JSON.stringify(this.stickyOnObj));
         // 创建一个空数组，扁平化层级结构并记录每个节点的层级深度
         const flattenedResult = this.flattenObject(this.stickyOnObj);
         const resultArray = Object.entries(flattenedResult).map(([key, value]) => ({ [key]: value }));
@@ -207,7 +221,7 @@ export default {
           if (this.stickyChildList[y]._uid == uid[0]) {
             let pos = `${i * FOOTER_HEIGHT}px`;
             this.stickyChildList[y].setStickyPos(pos);
-            this.stickyChildList[y].setStickyOn();
+            this.stickyChildList[y].setStickyOn(true);
             break;
           }
         }
@@ -249,25 +263,28 @@ export default {
       }
       return result;
     },
-    
+
     // 页面滚动监听 - 触发方式为子 组件调用 / 参数sticky传递了数值
     handleDocScrollListener(open) {
       if (open) {
         if (_.isNull(this.scrollListener)) {
-          this.scrollListener = document.addEventListener('scroll', this.handleScroll); // 添加监听
+          this.scrollListener = this.scrollContainer.addEventListener('scroll', this.handleScroll); // 添加监听
         }
       }
       else {
         if (!(_.isNull(this.scrollListener))) {
           // 取消监听
-          document.removeEventListener(this.scrollListener);
+          this.scrollContainer.removeEventListener('scroll', this.scrollListener);
         }
       }
     },
     // 刷新所有开启吸底效果的吸底检测
-    handleScroll: throttle(function(){
+    // handleScroll() {
+    //   this.handleStickyItem();
+    // },
+    handleScroll: throttle(function () {
       this.handleStickyItem();
-    }, 200),
+    }, 25),
   },
 }
 </script>
