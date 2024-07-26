@@ -1,5 +1,5 @@
 <template>
-  <div class="fox_button nsel" @click.stop.prevent="handleClick">
+  <div class="fox_button nsel" @click.stop.prevent="handleClick" @mousedown="handleTimer(true)" @mouseup="handleTimer(false)" @mouseleave="handleTimer(false)" @contextmenu="handleMenu">
     <fox_baseframe
       :themeColor="themeColor"
       :bgColor="bgColor"
@@ -70,13 +70,33 @@ export default {
     },
     iconGap: { // 图标与文字间距
       default: '5px',
-    }
+    },
+    longPress: { // 长按按钮
+      type: Boolean,
+      default: false,
+    },
+    longPressTime: { // 长按事件触发所需时长
+      default: 1000,
+    },
+    longPressEvent: { // 长按事件触发的回调函数
+      type: Function,
+      default: ()=>{},
+    },
+    menuPress: { // 右键按下
+      type: Boolean,
+      default: false,
+    },
+    menuPressEvent: { // 右键按下触发的回调函数
+      type: Function,
+      default: ()=>{},
+    },
   },
   data() {
     return {
       fontSize: ['16px', '12px', '22px',],
       textColor_Loc: null,
       size_loc: 0,
+      longPressTimer: null, // 长按计时器
     }
   },
   components: {
@@ -156,6 +176,37 @@ export default {
         case 'bottom':
           return 'flex-center flex-col-rev';
       }
+    },
+    // 管理长按计时器
+    handleTimer(open=false) {
+      if (!this.longPress ) return;
+      if (open) {
+        // console.log('timer on!');
+        if (_.isNull(this.longPressTimer)) {
+          this.longPressTimer = setTimeout(() => {
+            this.handleLongPress();
+          }, this.longPressTime);
+        }
+      }
+      else {
+        // console.log('timer cancel!');
+        clearTimeout(this.longPressTimer);
+        this.longPressTimer = null;
+      }
+    },
+    handleLongPress() {
+      // console.log('long press active!');
+      this.longPressEvent();
+      clearTimeout(this.longPressTimer);
+      this.longPressTimer = null;
+    },
+    // 右键事件
+    handleMenu(ev) {
+      if (!this.menuPress) return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      // console.log('menu click !');
+      this.menuPressEvent();
     },
   },
 }

@@ -1,7 +1,8 @@
 <template>
   <div id="app" ref="app">
-    <div v-if="false" class="testArea" ref="testArea">
-      <fox_slider :arrData="arr_1"></fox_slider>
+    <div v-if="true" class="testArea" ref="testArea">
+      <!-- <fox_slider @onchange="handleChange" :arrData="arr_1"></fox_slider> -->
+      <!-- <fox_button darkMode longPress menuPress :menuPressEvent="handleChange" :longPressEvent="handleChange" :label="'BUTTON'"></fox_button> -->
     </div>
     <div v-if="false" class="testArea">
       <fox_button :label="`点击切换${dmode ? '白天' : '深色'}模式`" @onClick="handleClick(...arguments, dmode)" :darkMode="dmode">
@@ -39,7 +40,7 @@
     <div v-if="false" class="testArea">
       <div style="height: 1000px;background-color: #eee;">超级长一大段内容</div>
     </div>
-    <div v-if="true" class="testArea scrollArea" ref="scrollArea">
+    <div v-if="false" class="testArea scrollArea" ref="scrollArea">
       <div class="copWrap">
         <fox_collapse ref="foxcollapse" :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false"
           :sticky="false">
@@ -184,6 +185,9 @@ export default {
       console.log('上次按钮状态:' + (d ? '深色模式' : '白天模式'));
       this.dmode = !d;
       console.log('变更状态为:' + (this.dmode ? '深色模式' : '白天模式'));
+    },
+    handleChange(ev) {
+      console.log(ev);
     },
   },
 }

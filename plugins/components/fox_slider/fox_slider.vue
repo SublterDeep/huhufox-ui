@@ -150,23 +150,6 @@ export default {
       isMouseDown: false, // 鼠标是否正在按下
     };
   },
-  mounted() {
-    const dom = this.$refs.root;
-    window.addEventListener("resize", this.handleResize);
-    this.resizeObserver = new ResizeObserver(this.handleResize);
-    this.resizeObserver.observe(dom, { box: "border-box" });
-    this.init();
-  },
-  beforeDestory() {
-    this.resizeObserver.disconnect();
-    this.handleInterval(false);
-    this.clearTimeout(this.container_timer);
-  },
-  deactivated() {
-    this.resizeObserver.disconnect();
-    this.handleInterval(false);
-    this.clearTimeout(this.container_timer);
-  },
   watch: {
     currentAutoScroll(nval, oval) {
       this.handleInterval(nval);
@@ -191,6 +174,14 @@ export default {
       }
       isRight = rightStepNum > leftStepNum ? false : true;
       this.handleContainerPos(domIndex);
+      let indexData = {
+        newIndex: nval,
+        oldIndex: oval,
+        direction: isRight ? 'right' : 'left',
+        step: rightStepNum > leftStepNum ? leftStepNum : rightStepNum,
+        ref: this,
+      };
+      this.$emit("onchange", indexData);
     },
     arrData: {
       handler(nval, oval) {
@@ -199,7 +190,24 @@ export default {
         this.init();
       },
       deep: true
-    }
+    },
+  },
+  mounted() {
+    const dom = this.$refs.root;
+    window.addEventListener("resize", this.handleResize);
+    this.resizeObserver = new ResizeObserver(this.handleResize);
+    this.resizeObserver.observe(dom, { box: "border-box" });
+    this.init();
+  },
+  beforeDestory() {
+    this.resizeObserver.disconnect();
+    this.handleInterval(false);
+    this.clearTimeout(this.container_timer);
+  },
+  deactivated() {
+    this.resizeObserver.disconnect();
+    this.handleInterval(false);
+    this.clearTimeout(this.container_timer);
   },
   methods: {
     init() {
