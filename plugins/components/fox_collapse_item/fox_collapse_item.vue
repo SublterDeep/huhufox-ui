@@ -1,5 +1,5 @@
 <template>
-  <div class="root">
+  <div class="root" ref="root">
     <!-- 标题区 -->
     <header class="flex-center" :class="position" @click.stop="setOpen(!open)">
       <div v-if="('header' in $slots)" style="width: 100%">
@@ -98,6 +98,7 @@ export default {
       stickyPos: '0px', // 吸底效果开始时可能同时存在多个footer，每个footer距离屏幕可视区底部的距离 - 待完成
       footerWidth: 0, // 吸底效果开启时footer的宽度 - 开启吸底效果前重新计算此项
       footerLeft: 0, // 吸底效果开启时footer距离左边可视区的距离 - 开启吸底效果前重新计算此项
+      footerBgcolor: null, // 吸底效果开启时footer的背景色
     }
   },
   watch: {
@@ -107,7 +108,6 @@ export default {
       this.$parent.onChange(this.index, nval);
       if (this.stickyLoc) {
         setTimeout(() => {
-          // this.setStickyOn();
           this.$parent.handleStickyItem();
         }, 150);
       }
@@ -116,13 +116,9 @@ export default {
     stickyOn(nval) {
       if (this.stickyLoc) {
         setTimeout(() => {
-          // this.setStickyOn();
           this.$parent.handleStickyItem();
         }, 150);
       }
-    },
-    stickyPos(nval) {
-      // console.log(nval);
     },
   },
   mounted() {
@@ -203,6 +199,14 @@ export default {
     setStickyOn(focusOff = false) {
       if (!this.stickyLoc) return;
       this.stickyOn = focusOff;
+      // document.querySelector
+      let dom = this.$refs.root;
+      let color = '#fff';
+      if (dom) {
+        let style = window.getComputedStyle(dom, 'background-color');
+        color = style.backgroundColor === 'rgb(255, 255, 255)' ? '#fff' : style.backgroundColor;
+        this.footerBgcolor = color;
+      }
       return;
     },
     setStickyPos(pos) {
@@ -296,7 +300,7 @@ section {
 
 .fixed {
   width: v-bind('footerWidth');
-  background-color: #fff;
+  background-color: v-bind('footerBgcolor');
   position: fixed;
   bottom: v-bind('stickyPos');
   left: v-bind('footerLeft');

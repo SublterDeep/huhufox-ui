@@ -1,6 +1,6 @@
 <template>
   <div id="app" ref="app">
-    <div v-if="true" class="testArea" ref="testArea">
+    <div v-if="false" class="testArea" ref="testArea">
       <!-- <fox_slider @onchange="handleChange" :arrData="arr_1"></fox_slider> -->
       <!-- <fox_button darkMode longPress menuPress :menuPressEvent="handleChange" :longPressEvent="handleChange" :label="'BUTTON'"></fox_button> -->
     </div>
@@ -37,8 +37,25 @@
         </fox_collapse_item>
       </fox_collapse>
     </div>
-    <div v-if="false" class="testArea">
+    <div v-if="true" class="testArea">
       <div style="height: 1000px;background-color: #eee;">超级长一大段内容</div>
+    </div>
+    <div v-if="true" class="testArea scrollArea" ref="scrollArea">
+      <div class="copWrap">
+        <fox_collapse ref="foxcollapse" :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false"
+          :sticky="false">
+          <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">1234</fox_collapse_item>
+          <fox_collapse_item :label="'吸底效果开启'" style="background-color: aqua;" :position="'bottom'" :sticky="true">
+            <div style="padding: 100px 0;background-color: lightpink;">吸底效果开启</div>
+          </fox_collapse_item>
+          <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">label 4</fox_collapse_item>
+          <fox_collapse_item :label="'吸底效果开启'" :position="'bottom'" :sticky="true">
+            <div style="padding: 100px 0;background-color: lightpink;">吸底效果开启</div>
+          </fox_collapse_item>
+          <fox_collapse_item :label="'label 4'" :position="'bottom'" :sticky="false">label 4</fox_collapse_item>
+          <fox_collapse_item :label="'label 4'" :position="'bottom'">label 4</fox_collapse_item>
+        </fox_collapse>
+      </div>
     </div>
     <div v-if="false" class="testArea scrollArea" ref="scrollArea">
       <div class="copWrap">
