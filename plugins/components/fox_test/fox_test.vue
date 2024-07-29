@@ -8,6 +8,9 @@
 import '../../style.css';
 export default {
   name: 'fox_test',
+  props: {
+    
+  },
   data() {
     return {
 

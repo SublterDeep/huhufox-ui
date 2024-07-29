@@ -1,8 +1,31 @@
 <template>
   <div id="app" ref="app">
-    <div v-if="false" class="testArea" ref="testArea">
+    <div v-if="true" class="testArea" ref="testArea">
+      <div v-if="true" style="height: 1000px;background-color: #eee;">超级长一大段内容</div>
       <!-- <fox_slider @onchange="handleChange" :arrData="arr_1"></fox_slider> -->
-      <!-- <fox_button darkMode longPress menuPress :menuPressEvent="handleChange" :longPressEvent="handleChange" :label="'BUTTON'"></fox_button> -->
+      <fox_dropdown v-model="dmode" :height="280" left >
+        <fox_button darkMode @onClick="dmode = !dmode" style="margin-left: 500px;" label="BUTTON">
+        </fox_button>
+        <template #item>
+          <div>
+            <p>插槽内容1</p>
+            <p>插槽内容1</p>
+            <p>插槽内容1</p>
+            <p>插槽内容2</p>
+            <p>插槽内容2</p>
+            <p>插槽内容2</p>
+            <p>插槽内容3</p>
+            <p>插槽内容3</p>
+            <p>插槽内容3</p>
+            <p>插槽内容4</p>
+            <p>插槽内容4</p>
+            <p>插槽内容4</p>
+            <p>插槽内容5</p>
+            <p>插槽内容5</p>
+            <p>插槽内容5</p>
+          </div>
+        </template>
+      </fox_dropdown>
     </div>
     <div v-if="false" class="testArea">
       <fox_button :label="`点击切换${dmode ? '白天' : '深色'}模式`" @onClick="handleClick(...arguments, dmode)" :darkMode="dmode">
@@ -37,10 +60,10 @@
         </fox_collapse_item>
       </fox_collapse>
     </div>
-    <div v-if="true" class="testArea">
+    <div v-if="false" class="testArea">
       <div style="height: 1000px;background-color: #eee;">超级长一大段内容</div>
     </div>
-    <div v-if="true" class="testArea scrollArea" ref="scrollArea">
+    <div v-if="false" class="testArea scrollArea" ref="scrollArea">
       <div class="copWrap">
         <fox_collapse ref="foxcollapse" :bottomText="'114444'" :showIcon="true" :lockContent="false" :expand="false"
           :sticky="false">
@@ -169,6 +192,7 @@ import fox_slider from '../plugins/components/fox_slider/fox_slider.vue'
 import fox_collapse from '../plugins/components/fox_collapse/fox_collapse.vue'
 import fox_collapse_item from '../plugins/components/fox_collapse_item/fox_collapse_item.vue';
 import fox_button from '../plugins/components/fox_button/fox_button.vue';
+import fox_dropdown from '../plugins/components/fox_dropdown/fox_dropdown.vue';
 
 export default {
   name: 'App',
@@ -177,6 +201,7 @@ export default {
     fox_button,
     fox_collapse,
     fox_collapse_item,
+    fox_dropdown,
   },
   data() {
     return {
@@ -186,13 +211,16 @@ export default {
     }
   },
   beforeMount() {
+    // console.log(this.$refs.scrollArea);
   },
   mounted() {
-    /* setInterval(() => {
-      this.dmode = !this.dmode;
-      console.log(this.dmode);
-    }, 1000); */
-    this.$foxConfig.scrollContainer = this.$refs.scrollArea; // 配置全局默认项滚动容器监听对象
+    // setInterval(() => {
+    // this.dmode = !this.dmode;
+    // console.log(this.dmode);
+    // }, 1000);
+    // this.$foxConfig.setScrollContainer(document); // 配置全局默认项滚动容器监听对象
+    // this.$foxConfig.setScrollContainer(this.$refs.app); // 配置全局默认项滚动容器监听对象
+    // this.$foxConfig.scrollContainer = document; // 配置全局默认项滚动容器监听对象
     // this.$foxConfig.scrollContainer = this.$refs.app; // 配置全局默认项滚动容器监听对象
     // this.$refs.foxcollapse.setScrollContainer(12); // 单独配置滚动容器监听对象
   },
@@ -217,6 +245,8 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   margin-top: 60px;
+  height: 600px;
+  overflow: auto;
 }
 
 .testArea {
@@ -232,6 +262,7 @@ export default {
   overflow: auto;
   padding: 800px 0;
 }
+
 .copWrap {
   margin: 400px 0;
 }

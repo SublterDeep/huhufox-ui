@@ -1,6 +1,6 @@
 {
   "name": "huhufox-ui",
-  "version": "0.1.55",
+  "version": "0.1.56",
   "description": "huhufoxUI 是一个专为 Vue.js 项目设计的轻量级 UI 组件库，旨在提供常用且高度定制化的界面组件，帮助开发者快速构建现代化的用户界面。",
   "author": "SublterDeep/huhufox",
   "license": "MIT",

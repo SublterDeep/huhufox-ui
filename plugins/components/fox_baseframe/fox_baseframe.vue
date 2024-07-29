@@ -19,7 +19,7 @@ import '../../style.css';
 export default {
   name: 'fox_baseframe',
   props: {
-    themeColor: { // 按钮主题色
+    themeColor: { // 主题色
       type: String,
       default: null,
     },
@@ -27,7 +27,7 @@ export default {
       type: String,
       default: null,
     },
-    borderRadius: { // 按钮外边框圆角 - 不给单位默认px
+    borderRadius: { // 外边框圆角 - 不给单位默认px
       default: 'auto',
     },
     mini: {

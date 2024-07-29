@@ -4,6 +4,7 @@ import fox_slider from "./plugins/components/fox_slider/index.js";
 import fox_button from "./plugins/components/fox_button/index.js";
 import fox_collapse from "./plugins/components/fox_collapse/index.js";
 import fox_collapse_item from "./plugins/components/fox_collapse_item/index.js";
+import fox_dropdown from "./plugins/components/fox_dropdown/index.js";
 // 方法
 import { throttle } from 'lodash';
 
@@ -14,6 +15,7 @@ const components = [
   fox_button,
   fox_collapse,
   fox_collapse_item,
+  fox_dropdown,
 ];
 
 
