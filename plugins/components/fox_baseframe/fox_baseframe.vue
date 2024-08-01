@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import '../../style.css';
 export default {
   name: 'fox_baseframe',
   props: {
@@ -166,6 +165,7 @@ export default {
   },
 }
 </script>
+<style src="../../style.css" scoped></style>
 <style scoped lang="scss">
 .fox_baseframe {
   display: inline-block;

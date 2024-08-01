@@ -42,7 +42,6 @@
 
 <script>
 const DEFAULT_BOTTOM_TEXT = ['展开', '收起'];
-import '../../style.css';
 export default {
   name: 'fox_collapse_item',
   props: {
@@ -215,6 +214,7 @@ export default {
   },
 }
 </script>
+<style src="../../style.css" scoped></style>
 <style scoped lang="scss">
 .root {
   width: 100%;

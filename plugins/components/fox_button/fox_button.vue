@@ -24,7 +24,6 @@
 <script>
 const DARK_TEXT_COLOR = ['#ccc', '#fff', '#fff'];
 const LIGHT_TEXT_COLOR = ['#666', '#333', '#000'];
-import '../../style.css';
 import fox_baseframe from '../fox_baseframe/fox_baseframe.vue';
 export default {
   name: 'fox_button',
@@ -211,6 +210,7 @@ export default {
   },
 }
 </script>
+<style src="../../style.css" scoped></style>
 <style scoped lang="scss">
 .fox_button {
   display: inline-block;

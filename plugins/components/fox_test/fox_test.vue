@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import '../../style.css';
 export default {
   name: 'fox_test',
   props: {
@@ -27,5 +26,6 @@ export default {
   },
 }
 </script>
+<style src="../../style.css" scoped></style>
 <style scoped lang="scss">
 </style>

@@ -21,7 +21,6 @@
 const ELM_GAP = 5;
 const DEF_WIDTH = 170;
 const DEF_HEIGHT = 300;
-import '../../style.css';
 export default {
   name: 'fox_dropdown',
   props: {
@@ -204,6 +203,7 @@ export default {
   },
 }
 </script>
+<style src="../../style.css" scoped></style>
 <style scoped lang="scss">
 .fox_dropdown {
   position: relative;

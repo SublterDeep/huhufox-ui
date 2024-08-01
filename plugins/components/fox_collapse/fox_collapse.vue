@@ -6,7 +6,6 @@
 
 <script>
 const FOOTER_HEIGHT = 50;
-import '../../style.css';
 export default {
   name: 'fox_collapse',
   props: {
@@ -281,6 +280,7 @@ export default {
   },
 }
 </script>
+<style src="../../style.css" scoped></style>
 <style scoped lang="scss">
 .root {
   width: 100%;

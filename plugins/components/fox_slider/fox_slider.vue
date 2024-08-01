@@ -50,7 +50,6 @@ const SHOT_SWIPE_TIME = 200; // 判定为快速滑动屏幕的最大时长
 const SHOT_SWIPE_DIS = 0.08; // 判定为快速滑动屏幕的最小距离(计算方式为组件宽度*该值)
 const LONG_SWIPE_DIS = 0.24; // 判定为普通滑动屏幕的最小距离(计算方式为组件宽度*该值)
 import { setTimeout } from 'core-js';
-import '../../style.css';
 export default {
   name: 'fox_slider',
   props: {
@@ -443,6 +442,7 @@ export default {
 }
 </script>
 
+<style src="../../style.css" scoped></style>
 <style lang="scss" scoped>
 .coverArea {
   width: 100%;
