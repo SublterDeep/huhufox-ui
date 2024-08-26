@@ -1,13 +1,13 @@
 <template>
   <div class="fox_dropdown" ref="fox_dropdown">
     <slot></slot>
-    <div v-if="true" class="dropdownWrap" ref="dropdownWrap" :style="{
+    <div :class="(show?'dropdownWrap fadeinanim':'dropdownWrap fadeoutanim')" ref="dropdownWrap" :style="{
       width: `${mySize.w}px`,
       height: `${mySize.h}px`,
       top: `${myPos.y}px`,
       left: `${myPos.x}px`,
-      opacity: show ? '1' : '0.2'
     }">
+      
       <slot v-if="('item' in $slots)" name="item"></slot>
       <div v-else>
         <span>列表数据容器</span>
@@ -72,15 +72,17 @@ export default {
       pDom: null, // 绑定的父节点
       myPos: { x: 0, y: 0 }, // 元素位置
       mySize: { w: 0, h: 0 }, // 元素大小
+      myDir_obj: {x: null, y: null}, // 方向
       myDir: 'B', // 计算后的方向
     }
   },
   watch: {
     show(nval) {
-      // console.log(nval);
+      console.log(nval);
       this.$nextTick(() => {
         this.initPosition(this.myDir); // 初始化自身位置
         this.initSize(); // 初始化自身大小`
+        this.handleOutview(); // 判断是否超出显示范围
       })
     }
   },
@@ -110,6 +112,7 @@ export default {
         if (this.right) xStr = 'R';
         if (!(_.isNull(xStr))) arr.push(xStr);
         if (!(_.isNull(yStr))) arr.push(yStr);
+        this.myDir_obj = {x: xStr, y: yStr};
         let str = arr.join('');
         this.myDir = str;
       }
@@ -193,6 +196,28 @@ export default {
         this.mySize.h = this.height;
       }
     },
+    // 判断是否超出显示范围
+    handleOutview() {
+      let html = document.querySelector('html');
+      let y = this.$el.getBoundingClientRect().top;
+      // console.log(window.innerHeight);
+      // console.log(window.innerWidth);
+      // console.log(this.myDir_obj);
+      // if ((y + this.mySize.h) >= html.offsetHeight && this.myDir_obj.y === 'B') {
+      //   console.log('下方越界');
+      // }
+      // else if ((y - this.mySize.h) <= 0 && this.myDir_obj.y === 'T') {
+      //   console.log('上方越界');
+      // }
+      // if (this.myPos.x < 0 && this.myDir_obj.x === 'L') {
+      //   console.log('左方越界');
+      // }
+      // else if ((this.myPos.x + this.mySize.w + this.$el.getBoundingClientRect().left) >= html.offsetWidth && this.myDir_obj.x === 'R') {
+      //   console.log('右方越界');
+      // }
+      // console.log(this.pDom.getBoundingClientRect().left + this.mySize.w + this.pDom.clientWidth);
+      // console.log(html.offsetWidth);
+    },
     getSize() {
       if (this.mySize.w === 0 && this.mySize.h === 0) this.initSize();
       return this.mySize;
@@ -216,5 +241,33 @@ export default {
   position: absolute;
   overflow: auto;
   transition: .2s opacity;
+}
+@keyframes fadein {
+  from {
+    display: none;
+    opacity: 0;
+  }
+
+  to {
+    display: block;
+    opacity: 1;
+  }
+}
+@keyframes fadeout {
+  from {
+    display: block;
+    opacity: 1;
+  }
+
+  to {
+    display: none;
+    opacity: 0;
+  }
+}
+.fadeinanim {
+  animation: fadein 0.2s ease forwards;
+}
+.fadeoutanim {
+  animation: fadeout 0.2s ease forwards;
 }
 </style>
